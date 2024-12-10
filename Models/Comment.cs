@@ -11,9 +11,9 @@ namespace BlogProject.Models
 
 
         //FOREIGN KEYS (Primary keys of other classes/models):
-        public int PostId { get; set; }
-        public string AuthorId { get; set; }
-        public string ModeratorId { get; set; }
+        public int? PostId { get; set; }
+        public string? BlogUserId { get; set; }
+        public string? ModeratorId { get; set; }
 
 
         //DESCRIPTION PROPERTIES:
@@ -38,11 +38,8 @@ namespace BlogProject.Models
 
         //NAVIGATION PROPERTIES:
 
-        // Child of:
         public virtual Post Post { get; set; }
-        public virtual IdentityUser Author { get; set; }
-
-            // Parent of:
-        public virtual IdentityUser Moderator { get; set; }
+        public virtual BlogUser BlogUser { get; set; }
+        public virtual BlogUser Moderator { get; set; }
     }
 }

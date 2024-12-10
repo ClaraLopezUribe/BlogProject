@@ -12,8 +12,8 @@ namespace BlogProject.Models
 
 
         //FOREIGN KEYS (Primary keys of other classes/models):
-        public int BlogId { get; set; }
-        public string AuthorId { get; set; }
+        public int? BlogId { get; set; }
+        public string? BlogUserId { get; set; }
 
 
         //DESCRIPTION PROPERTIES:
@@ -42,13 +42,6 @@ namespace BlogProject.Models
         public ReadyStatus ReadyStatus { get; set; }
 
 
-
-
-
-
-
-
-
         //Programatically created property derived from the title properties. Used for SEO
         public string Slug { get; set; }
 
@@ -65,7 +58,7 @@ namespace BlogProject.Models
             
             // Child of:
         public virtual Blog Blog { get; set; }
-        public virtual IdentityUser Author { get; set; }
+        public virtual BlogUser BlogUser { get; set; }
 
             // Parent of:
         public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();

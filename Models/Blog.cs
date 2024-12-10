@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -14,7 +13,7 @@ namespace BlogProject.Models
 
 
         //FOREIGN KEYS (Primary Keys of other classes/model): 
-        public string AuthorId { get; set; }
+        public string? BlogUserId { get; set; }
 
 
         //DESCRIPTION PROPERTIES:
@@ -51,7 +50,7 @@ namespace BlogProject.Models
         //NAVIGATION PROPERTIES:
 
             //Child of:
-        public virtual IdentityUser Author { get; set; }
+        public virtual BlogUser BlogUser { get; set; }
 
             // Parent of:
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
