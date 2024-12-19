@@ -28,7 +28,7 @@ namespace BlogProject.Models
 
         [DataType(DataType.Date)]
         [Display(Name = "Created Date")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Updated Date")]
@@ -37,20 +37,22 @@ namespace BlogProject.Models
 
         //IMAGE PROPERTIES:
         [Display(Name = "Blog Image")]
-        public byte[] ImageData { get; set; }
+        public byte[]? ImageData { get; set; }
 
         [Display(Name = "Image Type")]
-        public string ContentType { get; set; }
+        public string? ContentType { get; set; }
 
         //Represents the physical file the user selects when creating new blog and selecting image; will not be saved in the data
         [NotMapped]
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
 
 
         //NAVIGATION PROPERTIES:
 
-            //Child of:
-        public virtual BlogUser BlogUser { get; set; }
+        //Child of:
+
+        [Display (Name = "Author")]
+        public virtual BlogUser? BlogUser { get; set; }
 
             // Parent of:
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
