@@ -102,6 +102,8 @@ namespace BlogProject.Controllers
             {
                 try
                 {
+                    blog.CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+
                     _context.Update(blog);
                     await _context.SaveChangesAsync();
                 }
