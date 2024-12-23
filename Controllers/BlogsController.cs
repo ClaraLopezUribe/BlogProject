@@ -91,7 +91,7 @@ namespace BlogProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Image")] Blog blog)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,CreatedDate,Image")] Blog blog)
         {
             if (id != blog.Id)
             {
@@ -102,6 +102,8 @@ namespace BlogProject.Controllers
             {
                 try
                 {
+                    blog.CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+
                     _context.Update(blog);
                     await _context.SaveChangesAsync();
                 }
