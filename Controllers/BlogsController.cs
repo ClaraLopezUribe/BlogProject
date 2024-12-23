@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace BlogProject.Controllers
 {
@@ -60,6 +61,7 @@ namespace BlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                blog.CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
                 _context.Add(blog);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
