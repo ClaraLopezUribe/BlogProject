@@ -12,6 +12,8 @@ namespace BlogProject.Models
 
 
         //FOREIGN KEYS (Primary keys of other classes/models):
+
+        [Display(Name = "Blog Name")]
         public int? BlogId { get; set; }
         public string? BlogUserId { get; set; }
 
@@ -43,22 +45,22 @@ namespace BlogProject.Models
 
 
         //Programatically created property derived from the title properties. Used for SEO
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
 
         //IMAGE PROPERTIES:
-        public byte[] ImageData { get; set; }
-        public string ContentType { get; set; }
+        public byte[]? ImageData { get; set; }
+        public string? ContentType { get; set; }
 
         [NotMapped]
-        public IFormFile Image {  get; set; }
+        public IFormFile? Image {  get; set; }
 
 
         //NAVIGATION PROPERTIES:
             
             // Child of:
-        public virtual Blog Blog { get; set; }
-        public virtual BlogUser BlogUser { get; set; }
+        public virtual Blog? Blog { get; set; }
+        public virtual BlogUser? BlogUser { get; set; }
 
             // Parent of:
         public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
