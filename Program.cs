@@ -25,6 +25,15 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages();
 
+
+// Register Custom Services
+builder.Services.AddScoped<DataService>();
+builder.Services.AddScoped<IBlogEmailSender, EmailService>();
+
+// Register preconfigured instance of MailSettings class
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
