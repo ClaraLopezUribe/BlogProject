@@ -15,7 +15,7 @@ namespace BlogProject.Services
             _mailSettings = mailSettings.Value;
         }
 
-        public Task SendContactEmailAsync(string emailForm, string name, string subject, string htmlMessage)
+        public Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
         {
             throw new NotImplementedException();
         }
