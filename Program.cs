@@ -1,22 +1,25 @@
 using BlogProject.Data;
 using BlogProject.Models;
+using BlogProject.Services;
+using BlogProject.View_Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
+
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 var connectionString = builder.Configuration.GetSection("pgSettings")["pgConnection"];
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
-    options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddDefaultIdentity<BlogUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddDefaultUI()
                 .AddRoles<IdentityRole>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -35,6 +38,14 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 
 
 var app = builder.Build();
+
+
+// Pull out registered DataService
+var dataService = app.Services.CreateScope()
+                     .ServiceProvider.GetRequiredService<DataService>();
+// Run initialization ManageDataAsync()
+await dataService.ManageDataAsync();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
