@@ -18,15 +18,15 @@ namespace BlogProject.Models
 
 
         //IMAGE PROPERTIES:
-        public byte[] ImageData { get; set; }
-        public string ContentType { get; set; }
+        public byte[]? ImageData { get; set; }
+        public string? ContentType { get; set; }
 
 
         //SOCIAL MEDIA URLS:
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and no more than {1} characters long", MinimumLength = 2)]
-        public string FacebookUrl { get; set; }
+        public string? FacebookUrl { get; set; }
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and no more than {1} characters long", MinimumLength = 2)]
-        public string TwitterXUrl { get; set; }
+        public string? TwitterXUrl { get; set; }
 
 
         [NotMapped]
