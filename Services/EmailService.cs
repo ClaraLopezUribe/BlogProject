@@ -3,7 +3,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using System.Net.Mail;
 
 namespace BlogProject.Services
 {
@@ -33,7 +32,7 @@ namespace BlogProject.Services
 
             email.Body = builder.ToMessageBody();
 
-            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            using var smtp = new SmtpClient();
             smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
             smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
 
