@@ -26,7 +26,7 @@ namespace BlogProject.Services
         // Wrapper Method //
         public async Task ManageDataAsync()
         {
-            // Programatically create or update the DB from Migrations
+            // Programatically create the DB from Migrations
             await _dbContext.Database.MigrateAsync();
 
             // Seed a few Roles into the system
@@ -63,7 +63,6 @@ namespace BlogProject.Services
 
 
             // Otherwise, create a few Users:
-
 
             // Admin Role User
             //Step 1.1: Create a new instance of BlogUser

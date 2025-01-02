@@ -45,7 +45,7 @@ builder.Services.AddScoped<ISlugService, BasicSlugService>();
 var app = builder.Build();
 
 
-// Pull out registered DataService
+// Get access to registered DataService
 var dataService = app.Services.CreateScope()
                      .ServiceProvider.GetRequiredService<DataService>();
 // Run initialization ManageDataAsync()
