@@ -12,13 +12,13 @@
                 <div class="control-group">
                     <div class="form-group floating-label-form-group controls">
                         <label asp-for="Name"></label>
-                        <input asp-for="Name" type="text" class="form-control" placeholder="Name" required data-validation-required-message="Please enter your name.">
+                        <input type="text" class="form-control" placeholder="Name" asp-for="Name" required data-validation-required-message="Please enter your name.">
                         <p class="help-block text-danger"></p>
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="form-group floating-label-form-group controls">
-                        <label>Email Address</label>
+                        <label asp-for="Email"></label>
                         <input type="email" class="form-control" placeholder="Email Address" asp-for="Email" required data-validation-required-message="Please enter your email address.">
                         <p class="help-block text-danger"></p>
                     </div>
