@@ -22,10 +22,10 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
+                @Html.DisplayNameFor(model => model.Created)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UpdatedDate)
+                @Html.DisplayNameFor(model => model.Updated)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ImageData)
@@ -44,14 +44,13 @@
                     @Html.DisplayFor(modelItem => blog.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => blog.CreatedDate)
+                    @Html.DisplayFor(modelItem => blog.Created)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => blog.UpdatedDate)
+                    @Html.DisplayFor(modelItem => blog.Updated)
                 </td>
                 <td>
-                    <img src="@imageService.DecodeImage(blog.ImageData, blog.ContentType)" />
-                    
+                    <img class="img-fluid" width="150px" src="@imageService.DecodeImage(blog.ImageData, blog.ContentType)" /> 
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@blog.Id">Edit</a> |
