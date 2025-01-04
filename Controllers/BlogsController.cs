@@ -73,6 +73,8 @@ namespace BlogProject.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            // Error state
             ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", blog.BlogUserId);
             return View(blog);
         }
@@ -98,7 +100,7 @@ namespace BlogProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,CreatedDate,Image")] Blog blog)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Blog blog, IFormFile newImage)
         {
             if (id != blog.Id)
             {
@@ -109,11 +111,28 @@ namespace BlogProject.Controllers
             {
                 try
                 {
-                    blog.CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                    var newBlog = await _context.Blogs.FindAsync(blog.Id);
 
-                    _context.Update(blog);
+                    newBlog.UpdatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+
+                    if (newBlog.Name != blog.Name)
+                    {
+                        newBlog.Name = blog.Name;
+                    }
+
+                    if (newBlog.Description != blog.Description)
+                    {
+                        newBlog.Description = blog.Description;
+                    }
+
+                    if (newImage is not null)
+                    {
+                        newBlog.ImageData = await _imageService.EncodeImageAsync(newImage);
+                    }
+
                     await _context.SaveChangesAsync();
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!BlogExists(blog.Id))
@@ -127,6 +146,7 @@ namespace BlogProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", blog.BlogUserId);
             return View(blog);
         }
