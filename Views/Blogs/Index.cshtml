@@ -1,7 +1,8 @@
 ﻿@using BlogProject.Services
 @using BlogProject.Models
+@model IEnumerable<Blog>
 @inject IImageService imageService
-@model IEnumerable<BlogProject.Models.Blog>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -16,6 +17,10 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.ImageData)
+            </th>
+            <th></th>
+            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
@@ -27,16 +32,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.Updated)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageData)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var blog in Model)
         {
             <tr>
+                <td>
+                    <img class="img-fluid" width="150px" src="@imageService.DecodeImage(blog.ImageData, blog.ContentType)" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => blog.Name)
                 </td>
@@ -48,9 +52,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => blog.Updated)
-                </td>
-                <td>
-                    <img class="img-fluid" width="150px" src="@imageService.DecodeImage(blog.ImageData, blog.ContentType)" /> 
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@blog.Id">Edit</a> |
