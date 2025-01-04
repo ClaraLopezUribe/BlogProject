@@ -28,11 +28,11 @@ namespace BlogProject.Models
 
         [DataType(DataType.Date)]
         [Display(Name = "Created Date")]
-        public DateTime? CreatedDate { get; set; }
+        public DateTime? Created { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Updated Date")]
-        public DateTime? UpdatedDate { get; set; }
+        public DateTime? Updated { get; set; }
 
 
         //IMAGE PROPERTIES:

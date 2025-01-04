@@ -64,7 +64,7 @@ namespace BlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                blog.CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                blog.Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
                 blog.BlogUserId = _userManager.GetUserId(User);
                 blog.ImageData = await _imageService.EncodeImageAsync(blog.Image);
                 blog.ContentType = _imageService.ContentType(blog.Image);
@@ -113,7 +113,7 @@ namespace BlogProject.Controllers
                 {
                     var newBlog = await _context.Blogs.FindAsync(blog.Id);
 
-                    newBlog.UpdatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                    newBlog.Updated = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
                     if (newBlog.Name != blog.Name)
                     {
