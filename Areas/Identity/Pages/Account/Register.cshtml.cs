@@ -6,14 +6,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
-using BlogProject.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using BlogProject.Services;
-using Azure.Identity;
+using BlogProject.Models;
 
 namespace BlogProject.Areas.Identity.Pages.Account
 {
@@ -25,13 +23,17 @@ namespace BlogProject.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<BlogUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IBlogEmailSender _emailSender;
+        private readonly IImageService _imageService;
+        private readonly IConfiguration _configruation;
 
         public RegisterModel(
             UserManager<BlogUser> userManager,
             IUserStore<BlogUser> userStore,
             SignInManager<BlogUser> signInManager,
             ILogger<RegisterModel> logger,
-            IBlogEmailSender emailSender)
+            IBlogEmailSender emailSender,
+            IImageService imageService,
+            IConfiguration configruation)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -39,6 +41,8 @@ namespace BlogProject.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _imageService = imageService;
+            _configruation = configruation;
         }
 
         /// <summary>
@@ -82,6 +86,10 @@ namespace BlogProject.Areas.Identity.Pages.Account
             [Display(Name = "Display Name")]
             public string DisplayName { get; set; }
 
+            [Display(Name = "Custom Image")]
+            public IFormFile ImageFile { get; set; }
+
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -91,6 +99,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+           
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -128,7 +137,13 @@ namespace BlogProject.Areas.Identity.Pages.Account
                 user.UserName = Input.Email;
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-                
+                user.DisplayName = Input.DisplayName;
+                user.Email = Input.Email;
+                user.ImageData = (await _imageService.EncodeImageAsync(Input.ImageFile)) ??
+                                  await _imageService.EncodeImageAsync(_configruation["DefaultUserImage"]);
+                user.ContentType = Input.ImageFile is null ?
+                                    Path.GetExtension(_configruation["DefaultUserImage"]) : _imageService.ContentType(Input.ImageFile);
+
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
