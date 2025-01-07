@@ -139,7 +139,7 @@ namespace BlogProject.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            // Independently manage the storage of the image data; Update the image only if a new image is selected by the user
+            // Independently manage the storage of the image data; Update the image ONLY if a new image is selected by the user
             if (Input.Image is not null)
             {
                 user.ImageData = await _imageService.EncodeImageAsync(Input.Image);

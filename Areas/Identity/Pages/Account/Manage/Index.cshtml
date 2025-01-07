@@ -22,7 +22,7 @@
             </div>
             <div class="form-floating mb-3">
                 <div class="form-group">
-                    <label asp-for="Input.Image" class="form-label">Select Image</label>
+                    <label asp-for="Input.Image" class="form-label",>Select Image</label>
                     <input type="file" asp-for="Input.Image" class="form-control" accept=".png,.jpg,.jpeg,.bmp,.tif" aria-required="true" placeholder="name@example.com" />
                     <span asp-validation-for="Input.Image" class="text-danger"></span>
                 </div>
@@ -32,7 +32,7 @@
     </div>
     <div class="col-md-6">
         <div>
-            <img src="@Model.CurrentImage" class="img-fluid rounded-circle"  />
+            <img src="@Model.CurrentImage" class="img-fluid rounded-circle w-50" />
         </div>
 
     </div>
