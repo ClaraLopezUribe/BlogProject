@@ -33,7 +33,7 @@ function addTag() {
 //    }
 //}
 
-// CF Tweeks
+// CF solution w/Tweeks
 function deleteTag() {
 
     let tagList = document.getElementById("TagList");
