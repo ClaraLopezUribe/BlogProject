@@ -14,6 +14,8 @@ function addTag() {
     return true;
 }
 
+
+
 // CF solution:
 //function deleteTag() {
 
@@ -54,19 +56,8 @@ function deleteTag() {
 }
 
 
+// On form submission, select all of the entries on select list - jquery
 
-////My Solution:
-//function deleteTag() {
-
-//    let tagList = document.getElementById("TagList");
-
-    
-//    while (index >= 0) {
-
-//        let selectedIndex = tagList.selectedIndex;
-//        if (selectedIndex >= 0) {
-//            tagList.removeChild(tagList.options[selectedIndex]);
-//            index--;
-//        }
-//    }
-//}
+$("form").on("submit", function () {
+    $("#TagList option").prop("selected", "selected");
+})
