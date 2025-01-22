@@ -10,7 +10,7 @@
 <h4>Post</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Edit" enctype="multipart/form-data">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -41,19 +41,47 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="ReadyStatus" class="control-label"></label>
+                <div class="row mt-3">
+                    <div class="col">
+                        <label for="TagEntry" class="control-label">Manage Tags</label>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <input type="text" id="TagEntry" name="TagEntry" class="form-control w-100" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn btn-primary btn-sm h-100 w-100 text-uppercase" name="Add" onclick="addTag()">Add</button>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-primary btn-sm h-100 w-100 text-uppercase" onclick="deleteTag()" name="Delete">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <select id="TagList" name="TagValues" multiple class="w-100"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-1">
+                <label asp-for="Image" class="control-label mb-1"></label>
+                <input type="file" name="NewImage" class="form-control mt-1" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <label asp-for="ReadyStatus" class="control-label mb-1"></label>
                 <select asp-for="ReadyStatus" class="form-control" asp-items="Html.GetEnumSelectList<ReadyStatus>()"></select>
                 <span asp-validation-for="ReadyStatus" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input type="file" name="NewImage" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="form-group mt-3">
+                <button type="submit" value="Save" class="btn btn-sm btn-primary w-100">Save</button>
             </div>
         </form>
     </div>
@@ -66,6 +94,8 @@
 @section Scripts {
 
     <script>
+        let tagValues = '@ViewData["TagValues"]';
+
         //Default font size but not for placeholder...
         $(document).ready(function()
                 {
@@ -74,7 +104,8 @@
                   });
                 }
             );
-
     </script>
+
+    <script src="~/js/custom.js"></script>
 
 }
