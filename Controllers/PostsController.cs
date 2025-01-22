@@ -31,17 +31,19 @@ namespace BlogProject.Controllers
         }
 
         // GET: Posts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string slug)
         {
-            if (id == null)
+            if (slug == null)
             {
                 return NotFound();
             }
 
             var post = await _context.Posts
                 .Include(p => p.Blog)
-                .Include(p => p.BlogUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(p => p.BlogUser) // This BlogUser is the Author of the Posts
+                .Include(p => p.Tags)
+                .FirstOrDefaultAsync(m => m.Slug == slug);
+
             if (post == null)
             {
                 return NotFound();
@@ -67,8 +69,9 @@ namespace BlogProject.Controllers
             if (ModelState.IsValid)
             {
                 post.Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
-                
+
                 var authorId = _userManager.GetUserId(User);
+                post.BlogUserId = authorId;
 
                 // Use the IImageService to store the user uploaded image data
                 post.ImageData = await _imageService.EncodeImageAsync(post.Image);
@@ -87,10 +90,11 @@ namespace BlogProject.Controllers
                 post.Slug = slug;
 
                 _context.Add(post);
+                await _context.SaveChangesAsync();
 
-                foreach(var tagText in tagValues)
+                // Add each new tag from the incoming list to the database
+                foreach (var tagText in tagValues)
                 {
-                    // Add each new tag to the database
                     _context.Add(new Tag()
                     {
                         PostId = post.Id,
@@ -123,7 +127,7 @@ namespace BlogProject.Controllers
                 return NotFound();
             }
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
-            
+
             return View(post);
         }
 

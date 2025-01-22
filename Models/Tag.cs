@@ -21,7 +21,7 @@ namespace BlogProject.Models
 
         //NAVIGATION PROPERTIES:
 
-            // Child of:
+        // Child of:
         public virtual Post Post { get; set; }
         public virtual BlogUser BlogUser { get; set; }
 

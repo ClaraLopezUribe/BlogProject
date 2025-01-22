@@ -9,12 +9,35 @@
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
-               @* Render the markup content captured by the Summernote WYSIWYG*@
-               @Html.Raw(Model.Content)
+                @* Render the markup content captured by the Summernote WYSIWYG*@
+                @Html.Raw(Model.Content)
             </div>
         </div>
     </div>
 </article>
+
+
+<!-- Display Post Tags -->
+<hr />
+
+<article>
+    <div class="row">
+        <div class="col text-center fw-bold h3">
+            Custom Post Tags
+        </div>
+    </div>
+    <!-- Link to index of other Posts with each tag -->
+    <div class="row">
+        <div class="col">
+            @foreach (var tag in Model.Tags)
+            {
+                <a asp-action="TagIndex" asp-route-tag="@tag.Text.ToLower()">#@tag.Text</a>
+            }
+        </div>
+    </div>
+</article>
+
+<hr />
 
 <!-- Display Comments related to this Post -->
 @*            add Comments form control 
@@ -23,4 +46,4 @@
      <input type="submit" class="btn" />
  </form>*@
 
- <!-- Display the image of the Comment's Author -->
+<!-- Display the image of the Comment's Author -->
