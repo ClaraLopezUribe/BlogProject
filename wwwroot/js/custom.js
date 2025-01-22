@@ -14,9 +14,7 @@ function addTag() {
     return true;
 }
 
-
-
-// CF solution:
+//// CF solution:
 //function deleteTag() {
 
 //    let tagCount = 1;
@@ -34,6 +32,8 @@ function addTag() {
 //        }
 //    }
 //}
+
+
 
 // CF solution w/Tweeks
 function deleteTag() {
@@ -61,3 +61,41 @@ function deleteTag() {
 $("form").on("submit", function () {
     $("#TagList option").prop("selected", "selected");
 })
+
+// Look for the tagValues variable to see if it contains data
+if (tagValues != '') {
+    // If it does, split it into an array and add each value to the list
+    let tagArray = tagValues.split(',');
+    for (let loop = 0; loop < tagArray.length; loop++) {
+        // Load up or Replace the options that we have
+        ReplaceTag(tagArray[loop], loop);
+        index++;
+    }
+}    
+
+
+function ReplaceTag(tag, index) {
+    let newOption = new Option(tag, tag);
+    document.getElementById("TagList").options[index] = newOption;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
