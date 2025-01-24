@@ -5,7 +5,6 @@ using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.Services;
 using Microsoft.AspNetCore.Identity;
-
 namespace BlogProject.Controllers
 {
     public class PostsController : Controller
@@ -15,7 +14,11 @@ namespace BlogProject.Controllers
         private readonly IImageService _imageService;
         private readonly UserManager<BlogUser> _userManager;
 
-        public PostsController(ApplicationDbContext context, ISlugService slugService, IImageService imageService, UserManager<BlogUser> userManager)
+        public PostsController(
+            ApplicationDbContext context, 
+            ISlugService slugService, 
+            IImageService imageService, 
+            UserManager<BlogUser> userManager)
         {
             _context = context;
             _slugService = slugService;
@@ -122,6 +125,7 @@ namespace BlogProject.Controllers
             }
 
             var post = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == id);
+
             if (post == null)
             {
                 return NotFound();
@@ -136,8 +140,8 @@ namespace BlogProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,ReadyStatus")] Post post, IFormFile newImage, List<string>tagValues)
-        {
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,ReadyStatus")] Post post, IFormFile? newImage, List<string>tagValues)
+        { 
             if (id != post.Id)
             {
                 return NotFound();
@@ -159,7 +163,7 @@ namespace BlogProject.Controllers
                         newPost.ImageData = await _imageService.EncodeImageAsync(newImage);
                         newPost.ContentType = _imageService.ContentType(newImage);
                     }
-
+                  
                     // Remove all Tags previously associated with this Post
                     _context.Tags.RemoveRange(newPost.Tags);
 
@@ -190,7 +194,7 @@ namespace BlogProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Description", post.BlogId);
+            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
             ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", post.BlogUserId);
 
             return View(post);
