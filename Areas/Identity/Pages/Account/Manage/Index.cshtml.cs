@@ -81,7 +81,6 @@ namespace BlogProject.Areas.Identity.Pages.Account.Manage
             var currentImage = _imageService.DecodeImage(user.ImageData, user.ContentType);
 
             Username = userName;
-            //CurrentImage = _imageService.DecodeImage(user.ImageData, user.ContentType);
 
             if (currentImage is not null)
             {
