@@ -26,7 +26,8 @@ function addTag() {
     return true;
 }
 
-//// CF solution:
+//// CF solution:  
+////// This implementation caused some unexpected behaviors (leaving blank spaces after deleting a tag on subsequent tag additions)
 //function deleteTag() {
 
 //    let tagCount = 1;
@@ -65,7 +66,7 @@ function deleteTag() {
     if (selectedIndex < 0) {
 
         swalWithDarkButton.fire({
-            html: "<span>PLEASE SELECT A TAG BEFORE DELETING</span>"
+            html: "<span class='font-weight-bolder'>PLEASE SELECT A TAG BEFORE DELETING</span>"
         });
 
         return true;

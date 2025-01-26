@@ -6,3 +6,14 @@ button.btn-sm,a.btn-sm {
 option {
     font-weight: bolder;
 }
+
+/*resize swal image  
+*/    
+
+
+
+div.swal2-container.swal2-center.swal2-backdrop-show > div {
+
+    outline: 4px solid black;
+    border: 3px solid #00ffff;
+}
