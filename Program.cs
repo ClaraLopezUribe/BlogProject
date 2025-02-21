@@ -71,9 +71,18 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
+// Create new MapControllerRoute to supersede default route using the Slug, sometimes refered to a "Vanity URL", lends itself to SEO
+app.MapControllerRoute(
+    name: "SlugRoute",
+    pattern: "BlogPosts/UrlFriendly/{slug}",
+    defaults: new { controller = "Posts", action = "Details" });
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();
