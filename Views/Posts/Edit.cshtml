@@ -76,7 +76,7 @@
 
             <div class="form-group mt-3">
                 <label asp-for="ReadyStatus" class="control-label mb-1"></label>
-                <select asp-for="ReadyStatus" class="form-control" asp-items="Html.GetEnumSelectList<ReadyStatus>()"></select>
+                <select asp-for="ReadyStatus" class="form-control form-select" asp-items="@Html.GetEnumSelectList<ReadyStatus>()"></select>
                 <span asp-validation-for="ReadyStatus" class="text-danger"></span>
             </div>
 

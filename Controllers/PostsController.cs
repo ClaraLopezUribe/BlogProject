@@ -15,9 +15,9 @@ namespace BlogProject.Controllers
         private readonly UserManager<BlogUser> _userManager;
 
         public PostsController(
-            ApplicationDbContext context, 
-            ISlugService slugService, 
-            IImageService imageService, 
+            ApplicationDbContext context,
+            ISlugService slugService,
+            IImageService imageService,
             UserManager<BlogUser> userManager)
         {
             _context = context;
@@ -82,10 +82,38 @@ namespace BlogProject.Controllers
 
                 // Create the slug and determine if it is unique
                 var slug = _slugService.UrlFriendly(post.Title);
-                if (!_slugService.IsUnique(slug))
+                // Create a variable to store whether an error has occured
+                var validationErrorOccurred = false;
+
+                // Detect incoming duplicate slugs (and modify the incoming slug to be unique???)
+                if (string.IsNullOrEmpty(slug))
                 {
+                    validationErrorOccurred = true;
                     // Add a Model state error and send back to the view
-                    ModelState.AddModelError("Title", "The title you provided results in a duplicate slug. Please provide a more specific title");
+                    ModelState.AddModelError("", "The title you provided results in an empty slug. Please provide a unique title");
+                }
+
+                else if (!_slugService.IsUnique(slug))
+                {
+                    validationErrorOccurred = true;
+                    // Add a Model state error and send back to the view
+                    ModelState.AddModelError("Title", "The title you provided results in a duplicate slug. Please provide a unique title");
+                }
+
+
+                //// Add custom model errors as needed
+                //else if (slug.Contains("test"))
+                //{
+                //    validationErrorOccurred = true;
+                //    // Add a Model state error and send back to the view
+                //        // Errors are tied to the property indicated in the first parameter, w/empty string appearing at the top of the view as an unordered list
+                //    ModelState.AddModelError("", "Uh-oh! It looks like you are trying to test the slug service. Please provide a unique title");
+                //    ModelState.AddModelError("Title", "The title you provided contains the word 'test'. Please provide a unique title");
+                    
+                //}
+
+                if (validationErrorOccurred)
+                {
                     ViewData["TagValues"] = string.Join(",", tagValues);
                     return View(post);
                 }
@@ -140,8 +168,8 @@ namespace BlogProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,ReadyStatus")] Post post, IFormFile? newImage, List<string>tagValues)
-        { 
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,ReadyStatus")] Post post, IFormFile? newImage, List<string> tagValues)
+        {
             if (id != post.Id)
             {
                 return NotFound();
@@ -151,24 +179,47 @@ namespace BlogProject.Controllers
             {
                 try
                 {
-                    var newPost = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == post.Id);
+                    // Get copy of original post from the database to preserve data that does not change, and update the data that does in the edit view 
+                    var newPost = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == id);
                     newPost.Updated = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
                     newPost.Title = post.Title;
                     newPost.Abstract = post.Abstract;
                     newPost.Content = post.Content;
                     newPost.ReadyStatus = post.ReadyStatus;
 
+
+                    var newSlug = _slugService.UrlFriendly(post.Title);
+
+                    if (newSlug != newPost.Slug)
+                    {
+                        if (_slugService.IsUnique(newSlug))
+                        {
+                            newPost.Title = post.Title;
+                            newPost.Slug = newSlug;
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Title", "This Title results in a duplicate slug. Please provide a unique title");
+                            ViewData["TagValues"] = string.Join(",", post.Tags.Select(t => t.Text));
+
+                            return View(post);
+                        }
+
+                    }
+
+
+
                     if (newImage != null)
                     {
                         newPost.ImageData = await _imageService.EncodeImageAsync(newImage);
                         newPost.ContentType = _imageService.ContentType(newImage);
                     }
-                  
+
                     // Remove all Tags previously associated with this Post
                     _context.Tags.RemoveRange(newPost.Tags);
 
                     // Add each new tag from the Edit form to the database
-                    foreach(var tagText in tagValues)
+                    foreach (var tagText in tagValues)
                     {
                         _context.Add(new Tag()
                         {
