@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.Services;
-using Microsoft.AspNetCore.Identity;
+using X.PagedList.Extensions;
+
 namespace BlogProject.Controllers
 {
     public class PostsController : Controller
@@ -31,6 +33,25 @@ namespace BlogProject.Controllers
         {
             var applicationDbContext = _context.Posts.Include(p => p.Blog).Include(p => p.BlogUser);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        //BlogPostIndex
+        public async Task<IActionResult> BlogPostIndex(int? id, int? page)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var pageNumber = page ?? 1;
+            var pageSize = 5;
+
+            var posts = _context.Posts
+                .Where(p => p.BlogId == id)
+                .OrderByDescending(p => p.Created)
+                .ToPagedList(pageNumber, pageSize);
+
+            return View(posts);
         }
 
         // GET: Posts/Details/5
