@@ -5,7 +5,9 @@ using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.Services;
 using BlogProject.View_Models;
+using BlogProject.Enums;
 using X.PagedList.Extensions;
+using X.PagedList.EF;
 
 namespace BlogProject.Controllers
 {
@@ -31,7 +33,7 @@ namespace BlogProject.Controllers
             // Add Nuget Package to facilitate paging by using .ToPagedList async and by referencing IPagedList interface
 
             //var blogs =  _context.Blogs.Where(
-            //    b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady))
+            //    b => b.Posts.Any(p => p.ReadyStatus == ReadyStatus.ProductionReady))
             //    .OrderByDescending(b => b.Created)
             //    .ToPagedList(pageNumber, pageSize);
 
@@ -39,9 +41,9 @@ namespace BlogProject.Controllers
             var blogs = _context.Blogs
                 .Include(b => b.BlogUser)
                 .OrderByDescending(b => b.Created)
-                .ToPagedList(pageNumber, pageSize);
+                .ToPagedListAsync(pageNumber, pageSize);
 
-            return View(blogs); 
+            return View(await blogs); 
 
         }
 
