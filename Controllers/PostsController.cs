@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.Services;
+using BlogProject.Enums;
 using X.PagedList.Extensions;
+using X.PagedList.EF;
 
 namespace BlogProject.Controllers
 {
@@ -26,6 +28,36 @@ namespace BlogProject.Controllers
             _slugService = slugService;
             _imageService = imageService;
             _userManager = userManager;
+        }
+
+        public async Task<IActionResult> SearchIndex(int? page, string searchTerm)
+        {
+            ViewData["SearchTerm"] = searchTerm;
+
+            var pageNumber = page ?? 1;
+            var pageSize = 5;
+
+            var posts = _context.Posts.AsQueryable();
+                //.Where(p => p.ReadyStatus == ReadyStatus.ProductionReady)
+            if(searchTerm != null)
+            {
+                searchTerm = searchTerm.ToLower();
+
+                posts = posts.Where(p =>
+                    p.Title.ToLower().Contains(searchTerm) ||
+                    p.Abstract.ToLower().Contains(searchTerm) ||
+                    p.Content.ToLower().Contains(searchTerm) ||
+                    p.Comments.Any(c =>
+                            c.Body.ToLower().Contains(searchTerm) ||
+                            c.ModeratedBody.ToLower().Contains(searchTerm) ||
+                            // Search the info of the Author of the comment for Search Term
+                            c.BlogUser.FirstName.ToLower().Contains(searchTerm) ||
+                            c.BlogUser.LastName.ToLower().Contains(searchTerm) ||
+                            c.BlogUser.Email.ToLower().Contains(searchTerm)));
+            }
+
+            posts = posts.OrderByDescending(p => p.Created);
+            return View(await posts.ToPagedListAsync(pageNumber, pageSize));
         }
 
         // GET: Posts
