@@ -28,19 +28,21 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages();
 
+// Register Custom Services
 
-// Register Custom DataServices class
 builder.Services.AddScoped<DataService>();
 
-// Register preconfigured instance of MailSettings class
+builder.Services.AddScoped<BlogSearchService>();
+
+// Register preconfigured instance of MailSettings
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddScoped<IBlogEmailSender, EmailService>();
 
-// Register IImageService
+// Register Custom Interface Services
 builder.Services.AddScoped<IImageService, BasicImageService>();
 
-// Register ISlugService
 builder.Services.AddScoped<ISlugService, BasicSlugService>();
+
 
 var app = builder.Build();
 
@@ -72,7 +74,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 
-// Create new MapControllerRoute to supersede default route using the Slug, sometimes refered to a "Vanity URL", lends itself to SEO
+// Create new MapControllerRoute to supersede default route using the Slug, sometimes refered to a "Vanity URL", which improves SEO
 app.MapControllerRoute(
     name: "SlugRoute",
     pattern: "BlogPosts/UrlFriendly/{slug}",
