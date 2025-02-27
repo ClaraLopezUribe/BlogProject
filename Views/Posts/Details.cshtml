@@ -70,16 +70,19 @@
 
 @foreach (var comment in Model.Comments)
 {
-    <div class="media media-border p-0 mb-2 bg-light">
-        <img class="mr-3 mt-3 rounded-circle" style="width:60px;" src="@imageService.DecodeImage(comment.BlogUser.ImageData, comment.BlogUser.ContentType)" />
-        <div class="media-body">
-            <h4>@comment.BlogUser.FullName</h4>
-            <small><i> Posted on @comment.Created.ToString("MMM dd, yyyy")</i></small>
-            <p>@comment.Body</p>
+    <div class="d-flex">
+        <div class="flex-shrink-0 media-border p-0 mb-2 bg-light">
+            <img class="mr-3 mt-3 rounded-circle" style="width:60px;" alt="" src="@imageService.DecodeImage (comment.BlogUser.ImageData, comment.BlogUser.ContentType)" />
+            <div class="flex-grow-1 ms-3">
+                <h4>@comment.BlogUser.FullName</h4>
+                <small><i> Posted on @comment.Created.ToString("MMM dd, yyyy")</i></small>
+                <p>@comment.Body</p>
+            </div>
+
+
         </div>
-
-
     </div>
+    
 }
 
 <!-- Display Comments related to this Post -->

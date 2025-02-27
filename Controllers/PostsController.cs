@@ -66,10 +66,10 @@ namespace BlogProject.Controllers
 
             var posts = _context.Posts
                 .Where(p => p.BlogId == id)
-                .OrderByDescending(p => p.Created)
-                .ToPagedList(pageNumber, pageSize);
+                .OrderByDescending(p => p.Created);
+            //.ToPagedList(pageNumber, pageSize);
 
-            return View(posts);
+            return View(await posts.ToPagedListAsync(pageNumber, pageSize));
         }
 
         // GET: Posts/Details/5
