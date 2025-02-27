@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
@@ -75,7 +71,7 @@ namespace BlogProject.Controllers
             if (ModelState.IsValid)
             {
                 comment.BlogUserId = _userManager.GetUserId(User); // this is the author of the comment
-                comment.Created = DateTime.Now;
+                comment.Created = DateTime.UtcNow.Date;
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
