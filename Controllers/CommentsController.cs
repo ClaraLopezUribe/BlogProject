@@ -70,13 +70,17 @@ namespace BlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                var postComments = await _context.Comments.Include(c => c.Post).FirstOrDefaultAsync(c => c.PostId == comment.PostId);
+
                 comment.BlogUserId = _userManager.GetUserId(User); // this is the author of the comment
-                comment.Created = DateTime.UtcNow.Date;
+                comment.Created = DateTime.UtcNow;
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Posts", new { slug = postComments.Post.Slug }, "commentSection");
             }
-
+            ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", comment.BlogUserId);
+            ViewData["ModeratorId"] = new SelectList(_context.Users, "Id", "Id", comment.ModeratorId);
+            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Abstract", comment.PostId);
 
             return View(comment);
         }
