@@ -38,26 +38,22 @@ namespace BlogProject.Controllers
         //Use my soft delete bool
         //}
 
-        //Scaffolded Index: will likely not be used
-        public async Task<IActionResult> Index()
-        {
-            var allComments = await _context.Comments.ToListAsync();
-            return View("Index", allComments);
-        }
+        //// UNCOMMENT this section if Scaffolded Index for MOD and/or use ADMIN is required
+        //public async Task<IActionResult> Index()
+        //{
+        //    var allComments = await _context.Comments.ToListAsync();
+        //    return View("Index", allComments);
+        //}
 
         // GET: Comments/Details/5
-        //Not used in this app; Details View file deleted
+            // Not required in this app; Details View file deleted
 
 
 
-        //// GET: Comments/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id");
-        //    ViewData["ModeratorId"] = new SelectList(_context.Users, "Id", "Id");
-        //    ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Abstract");
-        //    return View();
-        //}
+        // GET: Comments/Create
+            //Not required in this app
+        
+        
 
         // POST: Comments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -183,13 +179,6 @@ namespace BlogProject.Controllers
         }
 
 
-
-
-
-
-
-
-
         // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -212,21 +201,20 @@ namespace BlogProject.Controllers
         }
 
         // POST: Comments/Delete/5
+            /** HARD DELETE: REMOVES RECORD FROM THE DATABASE  **/
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string slug)
         {
             var comment = await _context.Comments.FindAsync(id);
-            if (comment != null)
-            {
-                _context.Comments.Remove(comment);
-            }
-
+            _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            // Use infered member to pass the slug as the route value and fragment to scroll to the comment section
+            return RedirectToAction("Details", "Posts", new { slug }, "commentSection");
         }
 
-        //Create a Soft Delete POST action?
+        ////Create a Soft Delete POST action if required
 
 
         private bool CommentExists(int id)
