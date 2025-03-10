@@ -135,10 +135,10 @@
                     {
                         return;
                     }
-                    else if (comment.Deleted is not null)
+                    @* else if (comment.Deleted is not null)
                     {
                         <p>This comment was deleted for <span class="text-bg-danger">EGREGIOUS @comment.ModerationType.ToString().ToUpper()</span></p>
-                    }
+                    } *@
                     else if (comment.Moderated is not null)
                     {
                         <p>@comment.ModeratedBody</p>
@@ -151,6 +151,8 @@
 
                 <!-- COMMENT CARD FOOTER -->
                 <div class="card-footer">
+
+                    <!-- Render EDIT/DELETE buttons for the user's own comment ONLY IF it has not already been moderated -->
                     @if (comment.Moderated is null && comment.Deleted is null && comment.BlogUserId == userManager.GetUserId(User))
                     {
                         <hr />
@@ -159,25 +161,34 @@
                                 <button type="button" class="btn btn-sm btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#editModal_@comment.Id">EDIT</button>
                             </div>
                             <div>
-                                <button class="btn btn-sm btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModal_@comment.Id">DELETE</button>
+                                <form asp-action="Delete" asp-controller="Comments">
+                                    @Html.Hidden("Id", comment.Id)
+                                    @Html.Hidden("Slug", comment.Post.Slug)
+                                    <button type="submit" class="btn btn-sm btn-dark fw-bold">DELETE</button>
+                                </form>
                             </div>
                         </div>
                     }
 
-                    @if (User.IsInRole(BlogRole.Moderator.ToString()) && comment.Deleted is null && comment.BlogUserId != userManager.GetUserId(User))
+                    <!-- Render MODERATE/DELETE buttons for Moderators and Administrators ONLY IF the comment was created by another users, NOT their own  -->
+                    @if (comment.BlogUserId != userManager.GetUserId(User) && comment.Deleted is null)
                     {
-                        <hr />
-                        <div class="d-flex gap-3">
-                            <div>
-                                <button class="btn btn-sm btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#moderateModal_@comment.Id">MODERATE</button>
+                        @if (User.IsInRole(BlogRole.Moderator.ToString()) || User.IsInRole(BlogRole.Administrator.ToString()))
+                        {
+                            <hr />
+                            <div class="d-flex gap-3">
+                                <div>
+                                    <button class="btn btn-sm btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#moderateModal_@comment.Id">MODERATE</button>
+                                </div>
+                                                                
+                                <form asp-action="Delete" asp-controller="Comments">
+                                    @Html.Hidden("Id", comment.Id)
+                                    @Html.Hidden("Slug", comment.Post.Slug)
+                                    <button type="submit" class="btn btn-sm btn-dark fw-bold">DELETE</button>
+                                </form>
                             </div>
-                            <div>
-                                @Html.Hidden("Id", comment.Id)
-                                @Html.Hidden("Slug", comment.Post.Slug)
-                                <button class="btn btn-sm btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModal_@comment.Id">DELETE</button>
-                            </div>
-                        </div>
-                    }
+                        }
+                    }                   
                 </div>      
             </div>
         </div>
@@ -186,7 +197,7 @@
 
     @***** MODALS ******@
 
-    <!-- EDIT MODAL -->
+    <!-- EDIT-MODAL -->
     //HTML id's must begin with a letter or underscore - you cannot only use the item's Id property for the HTML id
     <div id="editModal_@comment.Id" class="modal">
         <div class="modal-dialog">
@@ -197,7 +208,7 @@
                     <div class="modal-title h4">Editing Comment...</div>
                 </div>
 
-                <!-- EDIT MODAL BODY -->
+                <!-- EDIT-MODAL BODY -->
                 <form asp-action="Edit" asp-controller="Comments">
                     @Html.Hidden("Id", comment.Id)
 
@@ -205,7 +216,7 @@
                         <textarea required name="Body" rows="5" class="form-control mb-2">@comment.Body</textarea>
                     </div>
 
-                    <!-- EDIT MODAL FOOTER -->
+                    <!-- EDIT-MODAL FOOTER -->
                     <div class="form-group modal-footer">
                         <button type="submit" class="btn btn-sm btn-dark border border-3 border-success fw-bold">SUBMIT</button>
                         <button type="button" data-bs-dismiss="modal" class="btn btn-sm btn-dark fw-bold border border-3 border-dark">CLOSE</button>
@@ -216,17 +227,17 @@
     </div>
 
 
-    <!-- MODERATE MODAL -->
+    <!-- MODERATE-MODAL -->
     <div id="moderateModal_@comment.Id" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
 
-                <!-- MODERATE MODAL HEADER -->
+                <!-- MODERATE-MODAL HEADER -->
                 <div class="modal-header">
                     <div class="modal-title h4">Moderating Comment...</div>
                 </div>
 
-                <!-- MODERATE MODAL BODY -->
+                <!-- MODERATE-MODAL BODY -->
                 <form asp-action="Moderate" asp-controller="Comments">
                     @Html.Hidden("Id", comment.Id)
                     @Html.Hidden("Body", comment.Body)
@@ -246,7 +257,7 @@
                         </div>
                     </div>
 
-                    <!-- MODERATE MODAL FOOTER -->
+                    <!-- MODERATE-MODAL FOOTER -->
                     <div class="form-group modal-footer">
                         <button type="submit" class="btn btn-sm btn-dark border border-3 border-success  fw-bold">SUBMIT</button>
                         <button type="button" data-bs-dismiss="modal" class="btn btn-sm btn-dark fw-bold border border-3 border-dark">CLOSE</button>
