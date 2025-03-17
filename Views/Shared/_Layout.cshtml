@@ -63,28 +63,29 @@
         /* TODO: Apply nav link styles to the Logout link to align w/other links */
     }
 
-    <header style="background-image: url('assets/img/home-bg.jpg')" class="masthead">
+    <header style="background-image: url(@ViewData["HeaderImage"])" class="masthead">
+        <div class="overlay"></div>
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                     <div class="site-heading">
                         <h1 class="h1">
-                            Code &#123;<br /> Life:&nbsp;Uploaded; <br />&#125;
-                            <span class="subheading mt-3">A Blog Project by Clara Lopez-Uribe</span>
+                           @ViewData["MainText"]                            
                         </h1>
+                        <span class="subheading mt-3">@ViewData["SubText"]</span>
+
+                        <form asp-action="SearchIndex" asp-controller="Posts">
+                            <div class="input-group mt-5">
+                                <input type="text" name="SearchTerm" placeholder="Search Term" class="form-control">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-warning btn-block">Search</button>
+                                </div>
+                            </div>
+                        </form>
 
                     </div>
                 </div>
             </div>
-
-            <form asp-action="SearchIndex" asp-controller="Posts">
-                <div class="input-group mt-5">
-                    <input type="text" name="SearchTerm" placeholder="Search Term" class="form-control">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-warning btn-block">Search</button>
-                    </div>
-                </div>
-            </form>
         </div>
     </header>
 
