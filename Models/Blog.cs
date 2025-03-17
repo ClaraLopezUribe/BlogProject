@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿// TODO: Do stuff in cs file - ctrl+\,t to open Task List window
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace BlogProject.Models
@@ -59,4 +60,3 @@ namespace BlogProject.Models
 
     }
 }
-    
