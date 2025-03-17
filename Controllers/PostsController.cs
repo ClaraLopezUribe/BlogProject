@@ -53,7 +53,7 @@ namespace BlogProject.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        //BlogPostIndex
+        //GET: BlogPostIndex
         public async Task<IActionResult> BlogPostIndex(int? id, int? page)
         {
             if (id == null)
@@ -67,7 +67,6 @@ namespace BlogProject.Controllers
             var posts = _context.Posts
                 .Where(p => p.BlogId == id)
                 .OrderByDescending(p => p.Created);
-            //.ToPagedList(pageNumber, pageSize);
 
             return View(await posts.ToPagedListAsync(pageNumber, pageSize));
         }
