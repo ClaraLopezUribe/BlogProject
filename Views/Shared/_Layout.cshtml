@@ -26,6 +26,8 @@
 
     <!-- Custom CSS -->
     <link href="~/css/custom.css" rel="stylesheet" />
+
+    
 </head>
 
 <body>
@@ -56,26 +58,33 @@
     </nav>
 
     <!-- Page Header -->
+    @{
+        /* TODO: Render background-image on all pages */
+        /* TODO: Apply nav link styles to the Logout link to align w/other links */
+    }
+
     <header style="background-image: url('assets/img/home-bg.jpg')" class="masthead">
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <div class="site-heading">
                         <h1 class="h1">
-                            Code {<br /> Life: Uploaded;<br />}
-                            <span class="subheading">A Blog Project by Clara Lopez-Uribe</span>
+                            Code &#123;<br /> Life:&nbsp;Uploaded; <br />&#125;
+                            <span class="subheading mt-3">A Blog Project by Clara Lopez-Uribe</span>
                         </h1>
+
                     </div>
-                    <form asp-action="SearchIndex" asp-controller="Posts">
-                        <div class="input-group mt-5">
-                            <input type="text" name="SearchTerm" placeholder="Search Term" class="form-control">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-warning btn-block">Search</button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
+
+            <form asp-action="SearchIndex" asp-controller="Posts">
+                <div class="input-group mt-5">
+                    <input type="text" name="SearchTerm" placeholder="Search Term" class="form-control">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-warning btn-block">Search</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </header>
 
