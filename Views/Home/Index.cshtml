@@ -1,6 +1,11 @@
-﻿@using BlogProject.Models
+﻿@using BlogProject.Enums
+@using BlogProject.Models
+@using BlogProject.Services
 @using X.PagedList
 @using X.PagedList.Mvc.Core
+
+@inject IImageService _imageService
+
 
 @model IPagedList<Blog>
 
@@ -16,12 +21,129 @@
     /* TODO (General): Fix Blog Edit Action - Does not update in database upon Submit. Also, Redirect to Blogs Index*/
 }
 
-<div class="container px-4 px-lg-5">
+
+<div class="row">
+    @foreach (var blog in Model)
+    {
+        <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
+            <div class="card border-dark">
+                <img class="card-img-top" src="@_imageService.DecodeImage(blog.ImageData, blog.ContentType)" alt="" />
+                <div class="card-body text-center">
+
+                    <div class="bg-warning">
+                        <hr class="card-hr" />
+                        <h5 class="card-title">@blog.Name</h5>
+                        <hr class="card-hr" />
+                    </div>
+
+                    @{ /* TODO: Find a way to make tooltip accessible or make the additional information part of the UI */}
+                    <div tabindex="0" aria-describedby="tooltip" data-toggle="tooltip" data-placement="top" title="@blog.BlogUser.FullName" data-original-title="@blog.BlogUser.FullName" class="card-text cftooltip">
+                        <p id="tooltip" role="tooltip"></p>
+                        <p>@blog.Description</p>
+                    </div>
+
+                    <br />
+                    <div class="text-center">
+                        <a class="btn btn-sm btn-dark w-100 mb-2" asp-action="BlogPostIndex" asp-controller="Posts"  asp-route-id="@blog.Id">Read Posts</a>
+                    </div>
+
+
+
+
+                       
+                    
+
+                    @if (User.IsInRole(BlogRole.Administrator.ToString()))
+                    {
+                        <div class="text-center">
+                            <a class="btn btn-sm btn-dark w-100 mb-2" asp-action="Create" asp-controller="Posts" asp-route-id="@blog.Id">Create Post</a>
+                        </div>
+                    }
+
+                    @if (User.IsInRole(BlogRole.Administrator.ToString()))
+                    {
+                        <div class="text-center">
+                            <a class="btn btn-sm btn-danger w-100" asp-action="Edit" asp-controller="Blogs" asp-route-id="@blog.Id">Edit Blog</a>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<hr />
+
+@***** PAGING SECTION *****@
+
+<!-- Page Count -->
+<div class="row">
+    <div class="col h3">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    </div>
+</div>
+
+<!-- Paged List Core -->
+<div class="row">
+    <div class="col">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }),
+                 new PagedListRenderOptions
+        {
+            LiElementClasses = new string[] { "page-item" },
+            PageClasses = new string[] { "page-link" }
+        })
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        var swalMsg = '@TempData["SweetAlert"]'
+        if (swalMsg != "") {
+            Swal.fire({
+                icon: 'success',
+                title: swalMsg,
+                time: 5000
+            })
+        }
+
+        $(document).ready(function () {
+            $("div").tooltip();
+        });
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
             @*Insert posts from database w/for each loop
  *@
-            @foreach (var blog in Model)
+@*             @foreach (var blog in Model)
             {
                 <!-- Post preview-->
                 <div class="post-preview">
@@ -68,4 +190,4 @@
         })
 
     </div>
-</div>
+</div> *@
