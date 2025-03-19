@@ -7,7 +7,7 @@
 
 #navbarResponsive > ul:nth-child(2) > li:nth-child(2) > form > button {
     line-height: 1.5;
-    font-family: 'Open Sans', 'Helvica Neue', Arial, Helvetica, sans-serif, Arial, sans-serif;
+    font-family: 'Open Sans', 'Helvica Neue', 'Arial', 'Helvetica', 'sans-serif', 'Arial', 'sans-serif';
     list-style: none;
     box-sizing: border-box;
     background-color: transparent;

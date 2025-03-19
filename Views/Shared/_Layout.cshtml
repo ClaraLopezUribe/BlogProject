@@ -27,50 +27,48 @@
     <!-- Custom CSS -->
     <link href="~/css/custom.css" rel="stylesheet" />
 
-    
+
 </head>
 
+@{
+    /* TODO: Render background-image on all pages */
+    /* TODO: Apply nav link styles to the Logout link to align w/other links */
+}
+
 <body>
-
-    <!-- Navigation -->
-    <nav id="mainNav" class="navbar navbar-expand-lg navbar-light">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Code { Life: Uploaded; }</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="About">About</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Contact">Contact</a></li>
-
-                    @if (User.IsInRole("Administrator"))
-                    {
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Blogs" asp-action="Create">Create Blog</a></li>
-                    }
-
-                </ul>
-                <partial name="_LoginPartial" />
-            </div>
-        </div>
-    </nav>
-
-    <!-- Page Header -->
-    @{
-        /* TODO: Render background-image on all pages */
-        /* TODO: Apply nav link styles to the Logout link to align w/other links */
-    }
-
+    <!-- Dynamic Page Header -->
     <header style="background-image: url(@ViewData["HeaderImage"])" class="masthead">
+
+        <!-- Navigation -->
+        <nav id="mainNav" class="navbar navbar-expand-lg navbar-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Code { Life: Uploaded; }</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="About">About</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Contact">Contact</a></li>
+
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Blogs" asp-action="Create">Create Blog</a></li>
+                        }
+                        <partial name="_LoginPartial" />
+                    </ul>
+                </div>
+            </div>
+        </nav>
         <div class="overlay"></div>
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                     <div class="site-heading">
                         <h1 class="h1">
-                           @ViewData["MainText"]                            
+                            @ViewData["MainText"]
                         </h1>
                         <span class="subheading mt-3">@ViewData["SubText"]</span>
 
@@ -89,8 +87,12 @@
         </div>
     </header>
 
-    <!-- Main Content-->
-    @RenderBody()
+    <main class="container p-xl-4 px-lg-5">
+        <!-- Main Content-->
+        @RenderBody()
+
+    </main>
+    
 
     <!-- Footer-->
     <footer class="border-top">
