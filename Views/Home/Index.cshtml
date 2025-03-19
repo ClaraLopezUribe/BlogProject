@@ -15,8 +15,7 @@
 
 
 @{
-    /* LEARN: Accessibility of Tooltips */
-    /* TODO (General): Fix tooltip on hover over blog description */
+    /* LEARN: How to make Tooltips accessible to screen readers */
     /* TODO (General): Fix button sm styles - add hight, border warning on hover */
     /* TODO (General): Fix Blog Edit Action - Does not update in database upon Submit. Also, Redirect to Blogs Index*/
 }
@@ -36,7 +35,9 @@
                         <hr class="card-hr" />
                     </div>
 
-                    @{ /* TODO: Find a way to make tooltip accessible or make the additional information part of the UI */}
+                    @{
+                        /* TODO: Find a way to make tooltip screenreader accessible or make the additional information part of the UI */
+                    }
                     <div tabindex="0" aria-describedby="tooltip" data-toggle="tooltip" data-placement="top" title="@blog.BlogUser.FullName" data-original-title="@blog.BlogUser.FullName" class="card-text cftooltip">
                         <p id="tooltip" role="tooltip"></p>
                         <p>@blog.Description</p>
@@ -44,14 +45,8 @@
 
                     <br />
                     <div class="text-center">
-                        <a class="btn btn-sm btn-dark w-100 mb-2" asp-action="BlogPostIndex" asp-controller="Posts"  asp-route-id="@blog.Id">Read Posts</a>
+                        <a class="btn btn-sm btn-dark w-100 mb-2" asp-action="BlogPostIndex" asp-controller="Posts" asp-route-id="@blog.Id">Read Posts</a>
                     </div>
-
-
-
-
-                       
-                    
 
                     @if (User.IsInRole(BlogRole.Administrator.ToString()))
                     {
