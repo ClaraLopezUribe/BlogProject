@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
+using BlogProject.View_Models;
 using BlogProject.Services;
-using BlogProject.Enums;
 using X.PagedList.Extensions;
 using X.PagedList.EF;
 
@@ -74,10 +74,8 @@ namespace BlogProject.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(string slug)
         {
-            if (slug == null)
-            {
-                return NotFound();
-            }
+            ViewData["Title"] = "Post Details Page";
+            if (string.IsNullOrEmpty(slug)) return NotFound();
 
             var post = await _context.Posts
                 .Include(p => p.Blog)
@@ -85,15 +83,49 @@ namespace BlogProject.Controllers
                 .Include(p => p.Tags)
                 .Include(p => p.Comments)
                 .ThenInclude(c => c.BlogUser) // This is the Author of the Comment
+                .Include(p => p.Comments)
+                .ThenInclude(c => c.Moderator) // This is the Moderator of the Comment
                 .FirstOrDefaultAsync(m => m.Slug == slug);
 
-            if (post == null)
-            {
-                return NotFound();
-            }
+            if (post == null) return NotFound();
 
-            return View(post);
+            var dataVM = new PostDetailViewModel()
+            {
+                Post = post,
+                Tags = _context.Tags
+                    .Select(t => t.Text.ToLower())
+                    .Distinct().ToList()
+            };
+
+            ViewData["HeaderImage"] = _imageService.DecodeImage(post.ImageData, post.Content);
+            ViewData["MainText"] = post.Title;
+            ViewData["SubText"] = post.Abstract;
+
+            return View(dataVM);
         }
+
+        //public async Task<IActionResult> Details(string slug)
+        //{
+        //    if (slug == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var post = await _context.Posts
+        //        .Include(p => p.Blog)
+        //        .Include(p => p.BlogUser) // This BlogUser is the Author of the Post
+        //        .Include(p => p.Tags)
+        //        .Include(p => p.Comments)
+        //        .ThenInclude(c => c.BlogUser) // This is the Author of the Comment
+        //        .FirstOrDefaultAsync(m => m.Slug == slug);
+
+        //    if (post == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(post);
+        //}
 
         // GET: Posts/Create
         public IActionResult Create()
