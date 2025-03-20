@@ -1,16 +1,17 @@
-﻿@using BlogProject.Enums
+﻿@using Microsoft.AspNetCore.Identity
+@using BlogProject.Enums
 @using BlogProject.Models
 @using BlogProject.Services
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 
 @inject IImageService _imageService
-
+@inject UserManager<BlogUser> _userManager
 
 @model IPagedList<Blog>
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
 
@@ -20,8 +21,7 @@
     /* TODO (General): Fix Blog Edit Action - Does not update in database upon Submit. Also, Redirect to Blogs Index*/
 }
 
-<div class="container">
-    <div class="row">
+<div class="row">
     @foreach (var blog in Model)
     {
         <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
@@ -38,27 +38,22 @@
                     @{
                         /* TODO: Find a way to make tooltip screenreader accessible or make the additional information part of the UI */
                     }
-                    <div tabindex="0" aria-describedby="tooltip" data-toggle="tooltip" data-placement="top" title="@blog.BlogUser.FullName" data-original-title="@blog.BlogUser.FullName" class="card-text cftooltip">
-                        <p id="tooltip" role="tooltip"></p>
-                        <p>@blog.Description</p>
+                    <div tabindex="0" aria-describedby="tooltip" data-toggle="tooltip" data-placement="top" title="@blog.Description" data-original-title="@blog.Description" class="card-text cftooltip">
+                        <p id="tooltip" role="tooltip">@blog.Description</p>
                     </div>
 
-                    <br />
+                    <br />      
                     <div class="text-center">
-                        <a class="btn btn-sm btn-dark w-100 mb-2" asp-action="BlogPostIndex" asp-controller="Posts" asp-route-id="@blog.Id">Read Posts</a>
+                        <a class="btn btn-sm btn-wide btn-dark mb-2" asp-action="BlogPostIndex" asp-controller="Posts" asp-route-id="@blog.Id">Read Posts</a>
                     </div>
 
                     @if (User.IsInRole(BlogRole.Administrator.ToString()))
                     {
                         <div class="text-center">
-                            <a class="btn btn-sm btn-dark w-100 mb-2" asp-action="Create" asp-controller="Posts" asp-route-id="@blog.Id">Create Post</a>
+                            <a class="btn btn-sm btn-wide btn-primary mb-4" asp-action="Create" asp-controller="Posts" asp-route-id="@blog.Id">Create Post</a>
                         </div>
-                    }
-
-                    @if (User.IsInRole(BlogRole.Administrator.ToString()))
-                    {
                         <div class="text-center">
-                            <a class="btn btn-sm btn-danger w-100" asp-action="Edit" asp-controller="Blogs" asp-route-id="@blog.Id">Edit Blog</a>
+                            <a class="btn btn-sm btn-wide btn-danger" asp-action="Edit" asp-controller="Blogs" asp-route-id="@blog.Id">Edit Blog</a>
                         </div>
                     }
 
@@ -82,8 +77,8 @@
 <!-- Paged List Core -->
 <div class="row">
     <div class="col">
-        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }),
-                 new PagedListRenderOptions
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), 
+            new PagedListRenderOptions
         {
             LiElementClasses = new string[] { "page-item" },
             PageClasses = new string[] { "page-link" }
