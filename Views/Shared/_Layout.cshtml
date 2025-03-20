@@ -30,18 +30,18 @@
 
 @{
     /* TODO: Render background-image on all pages */
-    /* TODO: Apply nav link styles to the Logout link to align w/other links */
 }
 
 <body>
+
     <!-- Dynamic Page Header -->
     <header style="background-image: url(@ViewData["HeaderImage"])" class="masthead">
 
-        <!-- Navigation -->
+        <!-- Main Navigation -->
         <nav id="mainNav" class="navbar navbar-expand-lg navbar-light">
             <div class="container px-4 px-lg-5">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">Code { Life: Uploaded; }</a>
-                <button type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler">
+                <button type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle Navigation" class="navbar-toggler">
                     Menu
                     <i class="fas fa-bars"></i>
                 </button>
@@ -60,6 +60,8 @@
                 </div>
             </div>
         </nav>
+        
+        <!-- Hero Banner -->
         <div class="overlay"></div>
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -74,25 +76,21 @@
                             <div class="input-group mt-5">
                                 <input type="text" name="SearchTerm" placeholder="Search Term" class="form-control">
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-warning btn-block">Search</button>
+                                    <button type="submit" class="btn btn-warning">Search</button>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-
+    <!-- Main Content-->
     <main class="container pb-3">
-        <!-- Main Content-->
+        
         @RenderBody()
     </main>
-
-
-
 
     <!-- Footer-->
     <footer class="border-top">
@@ -125,7 +123,7 @@
                             </a>
                         </li>
                     </ul>
-                    <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2023</div>
+                    <div class="small text-center text-muted fst-italic">Copyright &copy; Clara Lopez-Uribe 2025</div>
                 </div>
             </div>
         </div>
@@ -145,7 +143,6 @@
     <script src="~/js/scripts.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
-
 
 </body>
 </html>
