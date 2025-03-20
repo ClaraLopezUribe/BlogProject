@@ -31,18 +31,19 @@
 
                     <div class="bg-warning">
                         <hr class="card-hr" />
-                        <h5 class="card-title">@blog.Name</h5>
+                        <h2 class="card-title h5">@blog.Name</h2>
                         <hr class="card-hr" />
                     </div>
 
                     @{
-                        /* TODO: Find a way to make tooltip screenreader accessible or make the additional information part of the UI */
+                        /* TODO: Make the card heights uniform regardless of the description length */
                     }
-                    <div tabindex="0" aria-describedby="tooltip" data-toggle="tooltip" data-placement="top" title="@blog.Description" data-original-title="@blog.Description" class="card-text cftooltip">
-                        <p id="tooltip" role="tooltip">@blog.Description</p>
-                    </div>
-
-                    <br />      
+                  
+                    <!-- ToolTip : Display full description on focus/hover -->
+                    <p id="tooltip" role="tooltip" tabindex="0" data-toggle="tooltip" data-placement="top" title="@blog.Description" data-original-title="@blog.Description" class="card-text cftooltip">@blog.Description
+                    </p>
+                    <br />
+                    
                     <div class="text-center">
                         <a class="btn btn-sm btn-wide btn-dark mb-2" asp-action="BlogPostIndex" asp-controller="Posts" asp-route-id="@blog.Id">Read Posts</a>
                     </div>
@@ -99,7 +100,7 @@
         }
 
         $(document).ready(function () {
-            $("div").tooltip();
+            $("p").tooltip();
         });
 
     </script>
