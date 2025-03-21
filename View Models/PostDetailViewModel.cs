@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BlogProject.Models;
+﻿using BlogProject.Models;
 
 namespace BlogProject.View_Models
 {

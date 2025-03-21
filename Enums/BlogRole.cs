@@ -6,7 +6,6 @@
         Moderator,
         GuestAuthor,
         //PendingAuthor,
-        //User,
         //Etc!
     }
 }

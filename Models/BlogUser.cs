@@ -42,7 +42,6 @@ namespace BlogProject.Models
             }
         }
 
-
         //NAVIGATION PROPERTIES:
         //For multi-author system tracking the blogs and posts associated with the logged-in user
         public virtual ICollection<Blog> Blogs { get; set; } = new HashSet<Blog>();

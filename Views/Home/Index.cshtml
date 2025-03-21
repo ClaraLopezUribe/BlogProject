@@ -5,8 +5,8 @@
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 
-@inject IImageService _imageService
-@inject UserManager<BlogUser> _userManager
+@inject IImageService imageService
+@inject UserManager<BlogUser> userManager
 
 @model IPagedList<Blog>
 
@@ -14,11 +14,17 @@
     ViewData["Title"] = "Home";
 }
 
-
 @{
-    /* LEARN: How to make Tooltips accessible to screen readers */
-    /* TODO (General): Fix button sm styles - add hight, border warning on hover */
-    /* TODO (General): Fix Blog Edit Action - Does not update in database upon Submit. Also, Redirect to Blogs Index*/
+    /* FEATURE : Make images responsive to screen size changes (aspect ratio) */
+    /* TODO : Make the card heights uniform regardless of the description length */
+    /* TODO : Fix Blog Edit Action - Does not update in database upon Submit (becuse blog model image is not nullable...upload current picture to edit view, or change and migrate/update database to allow nullable image, or add error message to inform user that they must re-upload a picture).  */
+    /* TODO : Redirect to Home Index after editing blog */
+    /* LEARN : How can you add alt text for dynamically loaded images? Perhaps add a field after the image select forms for user to write their own before subitting? Feature idea: include AI to help write initial alt text suggestion */
+    /* TODO : If GuesAuthor Role is used, add logic here (if true display create blogPost button desplayed but not the edit blog button var isAuthor = false */
+    @* {
+            isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString()); // does the logged in user occupy the GuestAuthor role?
+            isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User)); // is the logged in user the author of this post?
+        } *@
 }
 
 <div class="row">
@@ -26,7 +32,7 @@
     {
         <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
             <div class="card border-dark">
-                <img class="card-img-top" src="@_imageService.DecodeImage(blog.ImageData, blog.ContentType)" alt="" />
+                <img class="card-img-top" src="@imageService.DecodeImage(blog.ImageData, blog.ContentType)" alt="" />
                 <div class="card-body text-center">
 
                     <div class="bg-warning">
@@ -57,7 +63,6 @@
                             <a class="btn btn-sm btn-wide btn-danger" asp-action="Edit" asp-controller="Blogs" asp-route-id="@blog.Id">Edit Blog</a>
                         </div>
                     }
-
                 </div>
             </div>
         </div>

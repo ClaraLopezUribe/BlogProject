@@ -46,14 +46,13 @@ namespace BlogProject.Models
         public IFormFile? Image { get; set; }
 
 
-        //NAVIGATION PROPERTIES:
+        // NAVIGATION PROPERTIES:
 
-        //Child of:
-
+        // Child of:
         [Display (Name = "Author")]
         public virtual BlogUser? BlogUser { get; set; }
 
-            // Parent of:
+        // Parent of:
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
 
     }

@@ -5,62 +5,75 @@
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 
-
-
 @inject UserManager<BlogUser> userManager
 @inject IImageService imageService
 
 @model IPagedList<Post>
 
+@{
+    ViewData["Title"] = "Blog Post Index";
+}
+
+@{
+    /* TODO : Make the card heights uniform regardless of the description length */
+    /* TODO : Check the logic for isAuthor if statement */
+}
+
 <div class="row">
     @foreach (var post in Model)
     {
-        //Is the logged in user the Author of this post??
+        // Check if the logged-in user is the Author of this post
         var isAuthor = false;
         if (User.Identity.IsAuthenticated)
         {
-            isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString());
-            isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User));
+            isAuthor = (post.BlogUserId == userManager.GetUserId(User));
         }
 
-        <div class="col-sm-2 col-lg-4">
+        <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
             <div class="card border-dark">
                 <div class="card-body text-center">
                     <div class="bg-warning">
+
                         <hr class="card-hr" />
-                        <h5 class="card-title">@post.Title</h5>
+                        <h2 class="card-title h5">@post.Title</h2>
                         <hr class="card-hr" />
-                    </div>
-                    <div>
-                        <p class="card-text">@post.Abstract</p>
                     </div>
 
-                    <br />
+                    <!-- ToolTip : Display full description on focus/hover -->
+                    <p id="tooltip" role="tooltip" tabindex="0" data-toggle="tooltip" data-placement="top" title="@post.Abstract" data-original-title="@post.Abstract" class="card-text cftooltip">
+                        @post.Abstract
+                    </p>
+                  
                     <div class="text-center">
-                        <a class="btn btn-dark btn-sm btn-block mb-2" asp-action="Details" asp-controller="Posts" asp-route-slug="@post.Slug">Read More</a>
+                        <a class="btn btn-sm btn-wide btn-dark" asp-action="Details" asp-controller="Posts" asp-route-slug="@post.Slug">Read More</a>
                     </div>
 
                     @if (User.IsInRole(BlogRole.Administrator.ToString()) || isAuthor)
                     {
+                        <hr />
                         <div class="text-center">
-                            <a class="btn btn-success btn-sm btn-block border-dark" asp-action="Edit" asp-controller="Posts" asp-route-id="@post.Id">Edit Post</a>
+                            <a class="btn btn-sm btn-wide btn-primary mb-2" asp-action="Edit" asp-controller="Posts" asp-route-id="@post.Id">Edit Post</a>
                         </div>
                     }
                 </div>
-                <img class="card-img-bottom" src="@imageService.DecodeImage(post.ImageData,  post.ContentType)" />
+                <img class="card-img-bottom" src="@imageService.DecodeImage(post.ImageData, post.ContentType)" alt="" />
             </div>
-
         </div>
     }
 </div>
 
 <hr />
 
+@***** PAGING SECTION *****@
+
+<!-- Page Count -->
 <div class="row">
     <div class="col h3">
         Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
     </div>
 </div>
+
+<!-- Paged List Core -->
 <div class="row">
     <div class="col">
         @Html.PagedListPager(Model, page => Url.Action("BlogPostIndex", new { id = Model.FirstOrDefault().BlogId, page = page }),
@@ -71,3 +84,22 @@
         })
     </div>
 </div>
+
+@section Scripts {
+    <script>
+
+        var swalMsg = '@TempData["SweetAlert"]'
+        if (swalMsg != "") {
+            Swal.fire({
+                icon: 'success',
+                title: swalMsg,
+                time: 5000
+            })
+        }
+
+        $(document).ready(function () {
+            $("p").tooltip();
+        });
+
+    </script>
+}
