@@ -4,6 +4,7 @@
     {
         // Work with iForm file
         Task<byte[]> EncodeImageAsync(IFormFile file);
+
         // Return byte array of image
         Task<byte[]> EncodeImageAsync(string fileName);
 

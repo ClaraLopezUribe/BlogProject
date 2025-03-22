@@ -65,13 +65,13 @@ namespace BlogProject.Controllers
             if (ModelState.IsValid)
             {
                 blog.Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
-                blog.BlogUserId = _userManager.GetUserId(User);
+                blog.BlogUserId = _userManager.GetUserId(User); // Records the logged in user as the Author of this Blog
                 blog.ImageData = await _imageService.EncodeImageAsync(blog.Image);
                 blog.ContentType = _imageService.ContentType(blog.Image);
                 _context.Add(blog);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index","Home");
             }
 
             // Error state
@@ -128,6 +128,7 @@ namespace BlogProject.Controllers
                     if (newImage is not null)
                     {
                         newBlog.ImageData = await _imageService.EncodeImageAsync(newImage);
+                        newBlog.ContentType = _imageService.ContentType(newImage);      
                     }
 
                     await _context.SaveChangesAsync();
@@ -144,7 +145,7 @@ namespace BlogProject.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index","Home");
             }
 
             ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", blog.BlogUserId);
@@ -182,7 +183,7 @@ namespace BlogProject.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Home");
         }
 
         private bool BlogExists(int id)

@@ -62,7 +62,7 @@ namespace BlogProject.Controllers
             }
 
             var pageNumber = page ?? 1;
-            var pageSize = 5;
+            var pageSize = 6;
 
             var posts = _context.Posts
                 .Where(p => p.BlogId == id)
@@ -148,7 +148,7 @@ namespace BlogProject.Controllers
                 var authorId = _userManager.GetUserId(User);
                 post.BlogUserId = authorId;
 
-                // Use the IImageService to store the user uploaded image data
+                // Use the _imageService to store the user uploaded image data
                 post.ImageData = await _imageService.EncodeImageAsync(post.Image);
                 post.ContentType = _imageService.ContentType(post.Image);
 
@@ -279,9 +279,7 @@ namespace BlogProject.Controllers
 
                     }
 
-
-
-                    if (newImage != null)
+                    if (newImage is not null)
                     {
                         newPost.ImageData = await _imageService.EncodeImageAsync(newImage);
                         newPost.ContentType = _imageService.ContentType(newImage);
@@ -314,7 +312,7 @@ namespace BlogProject.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
 
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
@@ -355,7 +353,7 @@ namespace BlogProject.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Home"));
         }
 
         private bool PostExists(int id)
