@@ -1,7 +1,7 @@
 ﻿@model BlogProject.Models.Blog
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Blog Details";
 }
 
 <h1>Details</h1>
@@ -10,12 +10,25 @@
     <h4>Blog</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BlogUser)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BlogUser.FullName)
+        </dd>
+
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
@@ -28,21 +41,17 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Created)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
-        <dt class = "col-sm-2">
+        @*< dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ImageData)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ImageData)
-        </dd>
+        </dd> *@
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="">Delete</a> |
     <a asp-action="Index">Back to List</a>
+    
 </div>
