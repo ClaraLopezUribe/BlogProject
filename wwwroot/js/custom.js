@@ -26,7 +26,7 @@ function addTag() {
     return true;
 }
 
-//// CF solution:  
+//// CF solution:
 ////// This implementation caused some unexpected behaviors (leaving blank spaces after deleting a tag on subsequent tag additions)
 //function deleteTag() {
 
@@ -58,9 +58,9 @@ function addTag() {
 function deleteTag() {
 
     let tagList = document.getElementById("TagList");
-    let tagCount = tagList.options.length;
     let selectedIndex = tagList.selectedIndex;
-
+    
+   
     if (!tagList) return false;
 
     if (selectedIndex < 0) {
@@ -72,11 +72,13 @@ function deleteTag() {
         return true;
     }
 
-    while (tagCount > 0) {
+    while (selectedIndex >= 0) {
 
         tagList.removeChild(tagList.options[selectedIndex]);
-        index--;   
-    }
+        index--;
+
+        return;
+    }        
 }
 
 
@@ -97,10 +99,13 @@ if (tagValues != '') {
         index++;
     }
 }
+
+
 function ReplaceTag(tag, index) {
     let newOption = new Option(tag, tag);
     document.getElementById("TagList").options[index] = newOption;
 }
+
 
 
 // The Search function will detect either an empty or duplicate Tag on this post and return an error string if an error is detected
@@ -136,6 +141,7 @@ const swalWithDarkButton = Swal.mixin({
 
 
 
+// TODO : Write a function to add the selected tag in AllTags list to the Post TagList, or copy the text of the selected tag to the tagEntry form-control text field ... assign() method??
 
 
 
