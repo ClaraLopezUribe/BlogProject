@@ -14,7 +14,7 @@ namespace BlogProject.Models
 
         [Display(Name = "Blog Name")]
         public int? BlogId { get; set; }
-        public string? BlogUserId { get; set; }
+        public string? BlogUserId { get; set; } // This is the author of the Post
 
 
         //DESCRIPTION PROPERTIES:

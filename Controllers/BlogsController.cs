@@ -95,12 +95,15 @@ namespace BlogProject.Controllers
             return View(blog);
         }
 
+        /* FEATURE : Add count of Posts in Blog to Edit View (see #commentsSection as reference) */
+       
+
         // POST: Blogs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Blog blog, IFormFile newImage)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Blog blog, IFormFile? newImage)
         {
             if (id != blog.Id)
             {
@@ -112,6 +115,7 @@ namespace BlogProject.Controllers
                 try
                 {
                     var newBlog = await _context.Blogs.FindAsync(blog.Id);
+                    
 
                     newBlog.Updated = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
@@ -124,7 +128,7 @@ namespace BlogProject.Controllers
                     {
                         newBlog.Description = blog.Description;
                     }
-
+                    
                     if (newImage is not null)
                     {
                         newBlog.ImageData = await _imageService.EncodeImageAsync(newImage);
@@ -151,6 +155,8 @@ namespace BlogProject.Controllers
             ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", blog.BlogUserId);
             return View(blog);
         }
+
+        // TODO : Prevent a blog with posts from being deleted; SweetAlert message to reassign a new blog to each post before deleting blog
 
         // GET: Blogs/Delete/5
         public async Task<IActionResult> Delete(int? id)

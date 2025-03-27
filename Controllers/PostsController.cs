@@ -33,6 +33,9 @@ namespace BlogProject.Controllers
             _blogSearchService = blogSearchService;
         }
 
+        /* FEATURE : Add TagIndex action and View in the PostsController to display an index off all posts with a related tag (use searchIndex action/view for reference) */
+
+        // GET : Posts/SearchIndex
         public async Task<IActionResult> SearchIndex(int? page, string searchTerm)
         {
             ViewData["SearchTerm"] = searchTerm;
@@ -46,15 +49,15 @@ namespace BlogProject.Controllers
             return View(await posts.ToPagedListAsync(pageNumber, pageSize));
         }
 
-        // GET: Posts
-        public async Task<IActionResult> Index()
+        // GET: Posts/Index
+        public async Task<IActionResult> Index() // Index of ALL Posts
         {
             var applicationDbContext = _context.Posts.Include(p => p.Blog).Include(p => p.BlogUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        //GET: BlogPostIndex
-        public async Task<IActionResult> BlogPostIndex(int? id, int? page)
+        //GET: Posts/BlogPostIndex
+        public async Task<IActionResult> BlogPostIndex(int? id, int? page) // Index of Posts in Blog
         {
             if (id == null)
             {
@@ -340,6 +343,8 @@ namespace BlogProject.Controllers
 
             return View(post);
         }
+
+        /* FEATURE : This is a Hard Delete. Refactor to create a Soft Delete using a bool check to remove it from the view but not from the database, if desired */
 
         // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]

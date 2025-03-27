@@ -5,14 +5,13 @@ using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.Services;
 using BlogProject.View_Models;
-using BlogProject.Enums;
-using X.PagedList.Extensions;
 using X.PagedList.EF;
 
 namespace BlogProject.Controllers
 {
     public class HomeController : Controller
     {
+        // LEARN : What is ILogger for?? it isn't used in this controller...delete?
         private readonly ILogger<HomeController> _logger;
         private readonly IBlogEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
@@ -28,23 +27,14 @@ namespace BlogProject.Controllers
         {
             var pageNumber = page ?? 1;
             var pageSize = 3;
-
-            
-            // Add Nuget Package to facilitate paging by using .ToPagedList async and by referencing IPagedList interface
-
-            //var blogs =  _context.Blogs.Where(
-            //    b => b.Posts.Any(p => p.ReadyStatus == ReadyStatus.ProductionReady))
-            //    .OrderByDescending(b => b.Created)
-            //    .ToPagedList(pageNumber, pageSize);
-
-            
+                                    
             var blogs = _context.Blogs
+                //.Where(b => b.Posts.Any(p => p.ReadyStatus == ReadyStatus.ProductionReady))
                 .Include(b => b.BlogUser)
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
             return View(await blogs); 
-
         }
 
         public IActionResult About()

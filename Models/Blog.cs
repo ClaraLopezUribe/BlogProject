@@ -12,7 +12,7 @@ namespace BlogProject.Models
 
 
         //FOREIGN KEYS (Primary Keys of other classes/model): 
-        public string? BlogUserId { get; set; }
+        public string? BlogUserId { get; set; } // This is the author of the Blog
 
 
         //DESCRIPTION PROPERTIES:

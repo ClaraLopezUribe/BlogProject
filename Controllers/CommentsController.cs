@@ -20,30 +20,33 @@ namespace BlogProject.Controllers
 
         // GET: Comments
 
-        public async Task<IActionResult> OriginalIndex()
-        {
-            var originalComments = await _context.Comments.ToListAsync();
-            return View("Index", originalComments);
-
-        }
-
-        public async Task<IActionResult> ModeratedIndex()
-        {
-            var moderatedComments = await _context.Comments.Where(c => c.Moderated != null).ToListAsync();
-            return View("Index", moderatedComments);
-        }
-
-        //public async Task<IActionResult> DeletedIndex()
-        //{
-        //Use my soft delete bool
-        //}
-
-        //// UNCOMMENT this section if Scaffolded Index for MOD and/or use ADMIN is required
+        //// UNCOMMENT this section if Scaffolded Index for MOD and/or ADMIN use is required; if this functionality is needed, add appropriate link in the Shared _Layout View
         //public async Task<IActionResult> Index()
         //{
-        //    var allComments = await _context.Comments.ToListAsync();
-        //    return View("Index", allComments);
+        //    var applicationDbContext = _context.Comments.Include(c => c.BlogUser).Include(c => c.Moderator).Include(c => c.Post);
+        //    return View("Index", await applicationDbContext.ToListAsync());
         //}
+
+        //public async Task<IActionResult> OriginalIndex()
+        //{
+        //    var originalComments = await _context.Comments.ToListAsync();
+        //    return View("Index", originalComments);
+
+        //}
+
+        //public async Task<IActionResult> ModeratedIndex()
+        //{
+        //    var moderatedComments = await _context.Comments.Where(c => c.Moderated != null).ToListAsync();
+        //    return View("Index", moderatedComments);
+        //}
+
+        ////public async Task<IActionResult> DeletedIndex()
+        ////{
+        ////    //Use a soft delete bool to list the comments marked for deletion
+
+        ////}
+
+
 
         // GET: Comments/Details/5
             // Not required in this app; Details View file deleted
@@ -214,7 +217,7 @@ namespace BlogProject.Controllers
             return RedirectToAction("Details", "Posts", new { slug }, "commentSection");
         }
 
-        ////Create a Soft Delete POST action if required
+        //// FEATURE :  Create a Soft Delete POST action if required
 
 
         private bool CommentExists(int id)
