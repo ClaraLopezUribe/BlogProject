@@ -9,6 +9,12 @@
 @inject IImageService imageService
 
 @{
+    /* TODO : UI- Fix comment card styles */
+    /* TODO : Remove System Tags section; */
+
+}
+
+@{
     ViewData["Title"] = "Post Details";
 }
 
@@ -41,6 +47,14 @@
                 <a asp-action="TagIndex" asp-route-tag="@tag.Text.ToLower()" class="btn btn-warning btn-sm btn-outline-dark">#@tag.Text</a>
             }
         </div>
+
+    @{
+        /* FEATURE : Link to index of other Posts containing each tag */
+        
+    }
+<!-- SYSTEM TAGS -->
+    <div class="row">
+        
     </div>
 </article>
 

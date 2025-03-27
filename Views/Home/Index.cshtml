@@ -11,7 +11,7 @@
 @model IPagedList<Blog>
 
 @{
-    ViewData["Title"] = "Blogs Index";
+    ViewData["Title"] = "Home - Blogs Index";
 }
 
 @{
@@ -51,7 +51,7 @@
                     <br />
                     
                     <div class="text-center">
-                        <a class="btn btn-sm btn-wide btn-dark mb-2" asp-action="BlogPostIndex" asp-controller="Posts" asp-route-id="@blog.Id">Read Posts</a>
+                        <a class="btn btn-sm btn-wide btn-dark mb-2" asp-action="BlogPostIndex" asp-controller="Posts" asp-route-id="@blog.Id">View Posts</a>
                     </div>
 
                     @if (User.IsInRole(BlogRole.Administrator.ToString()))

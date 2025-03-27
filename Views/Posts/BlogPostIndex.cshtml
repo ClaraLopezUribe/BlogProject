@@ -15,8 +15,8 @@
 }
 
 @{
-    /* TODO : Make the card heights uniform regardless of the description length */
     /* TODO : Check the logic for isAuthor if statement */
+    /* FEATURE : Add the author name and created date of Post here??? or in the Post Details? */
 }
 
 <div class="row">
@@ -39,10 +39,17 @@
                         <hr class="card-hr" />
                     </div>
 
+                    @{
+                        /* TODO : UI - Make the card heights uniform regardless of the description length; force the <p> tag to  */                        
+                    }
+
                     <!-- ToolTip : Display full description on focus/hover -->
-                    <p id="tooltip" role="tooltip" tabindex="0" data-toggle="tooltip" data-placement="top" title="@post.Abstract" data-original-title="@post.Abstract" class="card-text cftooltip">
-                        @post.Abstract
-                    </p>
+                    <div>
+                        <p id="tooltip" role="tooltip" tabindex="0" data-toggle="tooltip" data-placement="top" title="@post.Abstract" data-original-title="@post.Abstract" class="card-text cftooltip">
+                            @post.Abstract
+                        </p>
+                    </div>
+                    
                   
                     <div class="text-center">
                         <a class="btn btn-sm btn-wide btn-dark" asp-action="Details" asp-controller="Posts" asp-route-slug="@post.Slug">Read More</a>

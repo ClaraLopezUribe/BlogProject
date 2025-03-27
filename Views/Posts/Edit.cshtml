@@ -1,8 +1,18 @@
 ﻿@model BlogProject.Models.Post
 @using BlogProject.Enums
 
+@inject BlogProject.Data.ApplicationDbContext context
+
+@model Post
+
 @{
     ViewData["Title"] = "Edit Post";
+}
+
+@{
+    /* TODO : Move the System Tags List to the Post Create and Edit Views */
+
+    /* TODO : Fix tags not saving in Post Edit */
 }
 
 <h1>Edit Post</h1>
@@ -38,6 +48,10 @@
                 <textarea asp-for="Content" class="form-control"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
+
+            @{
+                /* TODO : Refactor Tags form group to make it responsive (mobile first design!) */
+            }
 
             <div class="form-group">
                 <div class="row mt-3">

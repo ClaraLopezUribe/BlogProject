@@ -41,6 +41,10 @@
                 <div class="form-group col">
                     <input type="hidden" asp-for="Id"/>
                     <a asp-controller="Blogs" asp-action="Delete" asp-route-id="@Model.Id" value="Delete Blog" class="btn btn-danger rounded-3">Delete Blog</a>
+                    @{ 
+                        /* TODO : Add error message IF count of posts in blog > 0 : there are (#of posts in blog) posts in this Blog. You must save each under a new Blog Name before deleting this Blog*/                    
+                    }
+
                 </div>
             </div>
         </form>
