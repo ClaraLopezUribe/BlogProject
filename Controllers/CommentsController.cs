@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
 using Microsoft.AspNetCore.Identity;
+using BlogProject.Services;
+using Microsoft.AspNetCore.Routing;
 
 namespace BlogProject.Controllers
 {
@@ -49,14 +51,12 @@ namespace BlogProject.Controllers
 
 
         // GET: Comments/Details/5
-            // Not required in this app; Details View file deleted
-
-
+        // Not required in this app; Details View file deleted
 
         // GET: Comments/Create
-            //Not required in this app
-        
-        
+        //Not required in this app
+
+
 
         // POST: Comments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -67,17 +67,15 @@ namespace BlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                var postComments = await _context.Comments.Include(c => c.Post).FirstOrDefaultAsync(c => c.PostId == comment.PostId);
+                    comment.BlogUserId = _userManager.GetUserId(User); // this is the author of the comment
+                    comment.Created = DateTime.UtcNow;
+                    _context.Add(comment);
+                    await _context.SaveChangesAsync();
 
-                comment.BlogUserId = _userManager.GetUserId(User); // this is the author of the comment
-                comment.Created = DateTime.UtcNow;
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Posts", new { slug = postComments.Post.Slug }, "commentSection");
+                var post = await _context.Comments.Include(p => p.Post).FirstOrDefaultAsync(p => p.Post.Id == comment.PostId);
+
+                return RedirectToAction("Details", "Posts", new { slug = post.Post.Slug }, "commentSection");
             }
-            ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", comment.BlogUserId);
-            ViewData["ModeratorId"] = new SelectList(_context.Users, "Id", "Id", comment.ModeratorId);
-            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Abstract", comment.PostId);
 
             return View(comment);
         }

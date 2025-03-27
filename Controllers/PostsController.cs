@@ -8,6 +8,7 @@ using BlogProject.View_Models;
 using BlogProject.Services;
 using X.PagedList.Extensions;
 using X.PagedList.EF;
+using AspNetCoreGeneratedDocument;
 
 namespace BlogProject.Controllers
 {
@@ -131,7 +132,7 @@ namespace BlogProject.Controllers
         //}
 
         // GET: Posts/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name");
             return View();
@@ -206,13 +207,11 @@ namespace BlogProject.Controllers
                         PostId = post.Id,
                         BlogUserId = authorId,
                         Text = tagText
-
                     });
-
                 }
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("BlogPostIndex", "Posts", new { id = post.BlogId });
             }
 
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
@@ -257,6 +256,7 @@ namespace BlogProject.Controllers
                     // Get copy of original post from the database to preserve data that does not change, and update the data that does in the edit view 
                     var newPost = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == id);
                     newPost.Updated = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                    newPost.BlogId = post.BlogId;
                     newPost.Title = post.Title;
                     newPost.Abstract = post.Abstract;
                     newPost.Content = post.Content;
@@ -315,7 +315,8 @@ namespace BlogProject.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("BlogPostIndex", "Posts", new { id = post.BlogId });           
             }
 
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
@@ -358,7 +359,7 @@ namespace BlogProject.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Home"));
+            return RedirectToAction("Index", "Home");
         }
 
         private bool PostExists(int id)
