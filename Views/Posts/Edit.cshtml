@@ -1,4 +1,4 @@
-﻿@model BlogProject.Models.Post
+﻿@using BlogProject.Models
 @using BlogProject.Enums
 
 @inject BlogProject.Data.ApplicationDbContext context
@@ -20,7 +20,7 @@
 <h4>Post</h4>
 <hr />
 <div class="row">
-    <div class="col-md-6">
+    <div class="col col-md-12">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -81,11 +81,36 @@
                 </div>
             </div>
 
-            <div class="form-group mt-1">
-                    <label asp-for="Image" class="control-label mb-1">New Image</label>
-                        <input type="file" name="NewImage" class="form-control mt-1" />
-                        <span asp-validation-for="Image" class="text-danger"></span>
+            @{
+                /* FEATURE : Create shared view for system wide tags list to insert into Create and Edit Views???  */
+                /* TODO : Make taglist reference a form group input select?, then change addTag() button name to Add New Tag */
+            }
+
+            <!-- SYSTEM TAGS LIST -->
+            <div class="col">
+                <aside>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title fw-bold">TAG REFERENCE LIST</div>
+                            <hr />
+                            <div class="tagView">
+                                @foreach (var tag in context.Tags.Select(t => t.Text.ToLower())
+                                .Distinct().ToList())
+                                {
+                                    <button disabled type="button" disabled id="AllTags" class="btn btn-sm btn-warning">
+                                        #@tag
+                                    </button>
+                                }
+                            </div>
+                        </div>
                     </div>
+                </aside>
+            </div>
+            <div class="form-group mt-1">
+                <label asp-for="Image" class="control-label mb-1">New Image</label>
+                <input type="file" name="NewImage" class="form-control mt-1" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
 
             <div class="form-group mt-3">
                 <label asp-for="ReadyStatus" class="control-label mb-1"></label>
@@ -96,8 +121,11 @@
             <div class="form-group mt-3">
                 <button type="submit" value="Save" class="btn btn-sm btn-primary w-100">Save</button>
             </div>
+
         </form>
     </div>
+
+
 </div>
 
 <div>
