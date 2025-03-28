@@ -10,17 +10,12 @@
 
 @model IPagedList<Blog>
 
-@{
-    ViewData["Title"] = "Home - Blogs Index";
-}
 
 @{
-    /* FEATURE : Make images responsive to screen size changes (aspect ratio) */
-    /* TODO : Make the card heights uniform regardless of the description length */
     /* TODO : Fix Blog Edit Action - Does not update in database upon Submit (becuse blog model image is not nullable...upload current picture to edit view, or change and migrate/update database to allow nullable image, or add error message to inform user that they must re-upload a picture).  */
     /* TODO : Redirect to Home Index after editing blog */
     /* LEARN : How can you add alt text for dynamically loaded images? Perhaps add a field after the image select forms for user to write their own before subitting? Feature idea: include AI to help write initial alt text suggestion */
-    /* TODO : If GuesAuthor Role is used, add logic here (if true display create blogPost button desplayed but not the edit blog button var isAuthor = false */
+    /* TODO : If GuestAuthor Role is used, add logic here (if true display create blogPost button desplayed but not the edit blog button var isAuthor = false */
     @* {
             isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString()); // does the logged in user occupy the GuestAuthor role?
             isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User)); // is the logged in user the author of this post?

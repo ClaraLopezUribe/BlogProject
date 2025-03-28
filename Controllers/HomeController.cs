@@ -29,11 +29,16 @@ namespace BlogProject.Controllers
             var pageSize = 3;
                                     
             var blogs = _context.Blogs
-                //.Where(b => b.Posts.Any(p => p.ReadyStatus == ReadyStatus.ProductionReady))
+                //.Where(b => b.Posts.Any(p => p.ReadyStatus == ReadyStatus.ProductionReady))               
                 .Include(b => b.BlogUser)
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
+            ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
+            ViewData["Title"] = "Home - Blogs Index";
+            ViewData["MainText"] = "";
+            ViewData["Subtext"] = "";
+            
             return View(await blogs); 
         }
 

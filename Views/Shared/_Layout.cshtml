@@ -13,7 +13,7 @@
 
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    
+
     <!-- Google fonts-->
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
@@ -29,14 +29,15 @@
 </head>
 
 @{
-    /* TODO: Render background-image on all pages */
+    /* Add Task List Items Here */
 }
 
 <body>
 
-    <!-- Dynamic Page Header -->
-    <header style="background-image: url(@ViewData["HeaderImage"])" class="masthead">
 
+    <!-- Dynamic Page Header -->
+    @* <header style= "background-image : url('/assets/img/home-bg.jpg')" class="masthead"> *@
+    <header style="background-image : url(@ViewData["HeaderImage"])" class="masthead">
         <!-- Main Navigation -->
         <nav id="mainNav" class="navbar navbar-expand-lg navbar-light">
             <div class="container px-4 px-lg-5">
@@ -52,7 +53,8 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Contact">Contact</a></li>
                         @if (User.IsInRole("Administrator"))
                         {
-                            <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Blogs" asp-action="Create">Create Blog</a>
+                            <li class="nav-item">
+                                <a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Blogs" asp-action="Create">Create Blog</a>
                             </li>
                         }
                         <partial name="_LoginPartial" />
@@ -60,8 +62,8 @@
                 </div>
             </div>
         </nav>
-        
-        <!-- Hero Banner -->
+
+        <!-- Header Text -->
         <div class="overlay"></div>
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -70,7 +72,7 @@
                         <h1 class="h1">
                             @ViewData["MainText"]
                         </h1>
-                        <span class="subheading mt-3">@ViewData["SubText"]</span>                      
+                        <span class="subheading mt-3">@ViewData["SubText"]</span>
                         <form asp-action="SearchIndex" asp-controller="Posts">
                             <div class="input-group mt-5">
                                 <input type="text" name="SearchTerm" placeholder="Search Term" class="form-control">
@@ -86,7 +88,7 @@
     </header>
 
     <!-- Main Content-->
-    <main class="container pb-3">        
+    <main class="container pb-3">
         @RenderBody()
     </main>
 

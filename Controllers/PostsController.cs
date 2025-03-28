@@ -68,21 +68,39 @@ namespace BlogProject.Controllers
             var pageNumber = page ?? 1;
             var pageSize = 6;
 
-            var posts = _context.Posts
-                .Where(p => p.BlogId == id)
-                .OrderByDescending(p => p.Created);
+            var posts = await _context.Posts 
+                .Where(p => p.BlogId == id) // Only include posts for the specified blog
+                .OrderByDescending(p => p.Created)         
+                .ToPagedListAsync(pageNumber,pageSize);
 
-            return View(await posts.ToPagedListAsync(pageNumber, pageSize));
+            var blog = await _context.Blogs.Where(b => b.Id == id)
+                .FirstOrDefaultAsync();
+
+            if ( blog.ImageData != null)
+            {
+                ViewData["HeaderImage"] = _imageService.DecodeImage(blog.ImageData, blog.ContentType);
+            }
+            else
+            {
+                ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
+            }
+
+            ViewData["Title"] = "Post Details";
+            ViewData["MainText"] = blog.Name;
+            ViewData["SubText"] = blog.Description;
+
+
+
+            return View(posts);
         }
 
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(string slug)
         {
-            ViewData["Title"] = "Post Details Page";
             if (string.IsNullOrEmpty(slug)) return NotFound();
 
             var post = await _context.Posts
-                .Include(p => p.Blog)
+                //.Include(p => p.Blog)
                 .Include(p => p.BlogUser) // This BlogUser is the Author of the Post
                 .Include(p => p.Tags)
                 .Include(p => p.Comments)
@@ -92,16 +110,25 @@ namespace BlogProject.Controllers
                 .FirstOrDefaultAsync(m => m.Slug == slug);
 
             if (post == null) return NotFound();
-
+            
             var dataVM = new PostDetailViewModel()
             {
                 Post = post,
-                Tags = _context.Tags
+                Tags = post.Tags
                     .Select(t => t.Text.ToLower())
                     .Distinct().ToList()
             };
 
-            ViewData["HeaderImage"] = _imageService.DecodeImage(post.ImageData, post.Content);
+            if (post.ImageData != null)
+            {
+                ViewData["HeaderImage"] = _imageService.DecodeImage(post.ImageData, post.ContentType);
+            }
+            else
+            {
+                ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
+            }
+
+            ViewData["Title"] = "Post Details";
             ViewData["MainText"] = post.Title;
             ViewData["SubText"] = post.Abstract;
 
