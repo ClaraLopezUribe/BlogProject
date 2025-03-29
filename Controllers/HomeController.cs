@@ -34,16 +34,27 @@ namespace BlogProject.Controllers
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
-            ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
+            if (ViewData["HeaderImage"] == null)
+            {
+               ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
+            }
+           
+            
+            //ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
             ViewData["Title"] = "Home - Blogs Index";
-            ViewData["MainText"] = "";
-            ViewData["Subtext"] = "";
+            ViewData["MainText"] = "Clara-FYI-ng Thoughts";
+            ViewData["Subtext"] = "A Collection of Blogs About Code, Careers, and Creativity";
             
             return View(await blogs); 
         }
 
         public IActionResult About()
         {
+            if (ViewData["HeaderImage"] == null)
+            {
+                ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
+            }
+
             return View();
         }
 

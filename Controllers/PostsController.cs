@@ -58,7 +58,7 @@ namespace BlogProject.Controllers
         }
 
         //GET: Posts/BlogPostIndex
-        public async Task<IActionResult> BlogPostIndex(int? id, int? page) // Index of Posts in Blog
+        public async Task<IActionResult> BlogPostIndex(int? id, int? page) // Index of Posts in selected Blog
         {
             if (id == null)
             {
@@ -69,27 +69,17 @@ namespace BlogProject.Controllers
             var pageSize = 6;
 
             var posts = await _context.Posts 
+                .Include(p => p.Blog)
                 .Where(p => p.BlogId == id) // Only include posts for the specified blog
                 .OrderByDescending(p => p.Created)         
                 .ToPagedListAsync(pageNumber,pageSize);
 
-            var blog = await _context.Blogs.Where(b => b.Id == id)
-                .FirstOrDefaultAsync();
+            var blog = posts.FirstOrDefault()?.Blog; // Get the blog associated with the first post in the list
 
-            if ( blog.ImageData != null)
-            {
                 ViewData["HeaderImage"] = _imageService.DecodeImage(blog.ImageData, blog.ContentType);
-            }
-            else
-            {
-                ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
-            }
-
             ViewData["Title"] = "Post Details";
             ViewData["MainText"] = blog.Name;
             ViewData["SubText"] = blog.Description;
-
-
 
             return View(posts);
         }
@@ -119,15 +109,7 @@ namespace BlogProject.Controllers
                     .Distinct().ToList()
             };
 
-            if (post.ImageData != null)
-            {
                 ViewData["HeaderImage"] = _imageService.DecodeImage(post.ImageData, post.ContentType);
-            }
-            else
-            {
-                ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
-            }
-
             ViewData["Title"] = "Post Details";
             ViewData["MainText"] = post.Title;
             ViewData["SubText"] = post.Abstract;
