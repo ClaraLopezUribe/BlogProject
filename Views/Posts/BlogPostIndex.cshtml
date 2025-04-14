@@ -59,7 +59,7 @@
                     {
                         <hr />
                         <div class="text-center">
-                            <a class="btn btn-sm btn-wide btn-primary mb-2" asp-action="Edit" asp-controller="Posts" asp-route-id="@post.Id">Edit Post</a>
+                            <a class="btn btn-sm btn-wide btn-danger mb-2" asp-action="Edit" asp-controller="Posts" asp-route-id="@post.Id">Edit Post</a>
                         </div>
                     }
                 </div>
@@ -94,6 +94,14 @@
 
 @section Scripts {
     <script>
+
+        var swalMsgNoPosts = '@TempData["NoPosts"]'
+        if (swalMsgNoPosts != "") {
+            Swal.fire({
+                icon: 'error',
+                title: swalMsgNoPosts
+            }).then(function(){window.location = "@Url.Action("Index","Home")";})           
+        }
 
         var swalMsg = '@TempData["SweetAlert"]'
         if (swalMsg != "") {
