@@ -12,9 +12,9 @@
 
 
 @{
-    /* TODO : Fix Blog Edit Action - Does not update in database upon Submit (becuse blog model image is not nullable...upload current picture to edit view, or change and migrate/update database to allow nullable image, or add error message to inform user that they must re-upload a picture).  */
-    /* TODO : Redirect to Home Index after editing blog */
+    /* FEATURE : ADD banner across Blog Project Tour Blog Image or card (if title == Blog Project Tour banner across card corner */
     /* LEARN : How can you add alt text for dynamically loaded images? Perhaps add a field after the image select forms for user to write their own before subitting? Feature idea: include AI to help write initial alt text suggestion */
+    /* LEARN : How can an admin assign roles to other users (ie GueastAuthor) Where is that implemented and controlled? */
     /* TODO : If GuestAuthor Role is used, add logic here (if true display create blogPost button desplayed but not the edit blog button var isAuthor = false */
     @* {
             isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString()); // does the logged in user occupy the GuestAuthor role?
@@ -45,6 +45,11 @@
                     </p>
                     <br />
                     
+
+                    @{
+                        /* FEATURE : UX - Insert count of posts in Blog(View n Posts) REFERENCE Details view */
+                    }
+
                     <div class="text-center">
                         <a class="btn btn-sm btn-wide btn-dark mb-2" asp-action="BlogPostIndex" asp-controller="Posts" asp-route-id="@blog.Id">View Posts</a>
                     </div>
@@ -86,6 +91,7 @@
         })
     </div>
 </div>
+
 
 @section Scripts {
     <script>

@@ -71,8 +71,8 @@ header.masthead .site-heading {
     width: 100%;
 }
 
-button.btn-sm, a.btn-sm {
-    line-height: 1;
+button.btn-sm, a.btn-sm, input.btn-sm {
+    line-height: 1.5;
     border: 4px solid;
     border-radius: 10px;
 }

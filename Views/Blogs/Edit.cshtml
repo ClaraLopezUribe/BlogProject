@@ -5,17 +5,19 @@
 }
 
 @{
-    /* TODO : Bring up the Current Image info so users don't have to re-upload it if they don't want to edit it (Reference User profile image) */
+    /* FEATURE : Bring up the Current Image info so users don't have to re-upload it if they don't want to edit it (Reference User profile image) */
+
+    /* FEATURE : Add count of Posts in Blog to Edit View (see #commentsSection as reference) */
 }
 
 <h2>Edit Blog</h2>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            
+
             <div class="form-group mb-2">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -33,18 +35,14 @@
                 <input type="file" name = "NewImage" class="form-control" accept=".jpg,.png,.gif,.jpeg" />
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
-           
+
             <div class="row mt-4 mb-4">
-                <div class="form-group col">
+                <div class="col row-cols-1 form-group mb-2">
                     <input type="submit" value="Save Changes" class="btn btn-primary rounded-3" />
                 </div>
-                <div class="form-group col">
+                <div class="col row-cols-1 form-group mb-2">
                     <input type="hidden" asp-for="Id"/>
                     <a asp-controller="Blogs" asp-action="Delete" asp-route-id="@Model.Id" value="Delete Blog" class="btn btn-danger rounded-3">Delete Blog</a>
-                    @{ 
-                        /* TODO : Add error message IF count of posts in blog > 0 : there are (#of posts in blog) posts in this Blog. You must save each under a new Blog Name before deleting this Blog*/                    
-                    }
-
                 </div>
             </div>
         </form>
@@ -55,6 +53,14 @@
     <a asp-controller="Home" asp-action="Index">Back Home</a>
 </div>
 
+
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
 }
+
+
