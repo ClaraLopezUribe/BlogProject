@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿/* DELETE : Extraneous blog-posts */
+/* ENHANCEMENT : Handle search/tag term for AI; Return ONLY exact references */
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +11,7 @@ using BlogProject.View_Models;
 using BlogProject.Services;
 using X.PagedList.Extensions;
 using X.PagedList.EF;
-using AspNetCoreGeneratedDocument;
+using Microsoft.AspNetCore.Routing;
 
 namespace BlogProject.Controllers
 {
@@ -34,7 +37,18 @@ namespace BlogProject.Controllers
             _blogSearchService = blogSearchService;
         }
 
-        /* FEATURE : Add TagIndex action and View in the PostsController to display an index off all posts with a related tag (use searchIndex action/view for reference) */
+        // GET : Posts/TagIndex
+        public async Task<IActionResult> TagIndex(int? page, string tag)
+        {
+            ViewData["Tag"] = tag;
+
+            var pageNumber = page ?? 1;
+            var pageSize = 3;
+
+            var posts = _blogSearchService.Search(tag);
+            return View(await posts.ToPagedListAsync(pageNumber, pageSize));
+        }
+
 
         // GET : Posts/SearchIndex
         public async Task<IActionResult> SearchIndex(int? page, string searchTerm)
@@ -42,7 +56,7 @@ namespace BlogProject.Controllers
             ViewData["SearchTerm"] = searchTerm;
 
             var pageNumber = page ?? 1;
-            var pageSize = 5;
+            var pageSize = 3;
 
             var posts = _blogSearchService.Search(searchTerm);
 
