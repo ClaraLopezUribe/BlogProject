@@ -1,6 +1,8 @@
 ﻿using BlogProject.Data;
 using BlogProject.Models;
 
+/* TODO : Uncomment all .Where(p => p.ReadyStatus == ReadyStatus.ProductionReady before publishing BlogProject */
+
 namespace BlogProject.Services
 {
     public class BlogSearchService

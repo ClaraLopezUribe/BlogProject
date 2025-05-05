@@ -6,6 +6,10 @@ using BlogProject.Models;
 using BlogProject.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using Microsoft.Extensions.Hosting;
+using Microsoft.CodeAnalysis.Scripting;
+using System.Reflection.Metadata;
 
 namespace BlogProject.Controllers
 {
@@ -21,8 +25,8 @@ namespace BlogProject.Controllers
             _imageService = imageService;
             _userManager = userManager;
         }
-
-        // GET: Blogs
+        /* TODO : Delete list of Blogs Index View and correspondeing IActionResult if not needed */
+        // GET: Blogs/Index List (Not the Landing Page)
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Blogs.Include(b => b.BlogUser);
@@ -95,7 +99,7 @@ namespace BlogProject.Controllers
             return View(blog);
         }
 
-        /* FEATURE : Add count of Posts in Blog to Edit View (see #commentsSection as reference) */
+        /* ENHANCEMENT : Add count of Posts in Blog to Edit View (see #commentsSection as reference) */
        
 
         // POST: Blogs/Edit/5
@@ -157,6 +161,7 @@ namespace BlogProject.Controllers
         }
 
         // TODO : Prevent a blog with posts from being deleted; SweetAlert message to reassign a new blog to each post before deleting blog
+
 
         // GET: Blogs/Delete/5
         public async Task<IActionResult> Delete(int? id)

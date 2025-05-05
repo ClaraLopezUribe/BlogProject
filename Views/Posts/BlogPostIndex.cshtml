@@ -15,8 +15,8 @@
 }
 
 @{
-    /* TODO : Check the logic for isAuthor if statement */
-    /* FEATURE : Add the author name and created date of Post here??? or in the Post Details? */
+    /* LEARN : how to implement if blogUser isAuthor, grant other blogUser GuestAuthor status for their blog */
+    /* ENHANCEMENT : Add created date of Post here??? or in the Post Details? And if blogUser isGuestAuthor, add name  */
 }
 
 <div class="row">
@@ -40,7 +40,7 @@
                     </div>
 
                     @{
-                        /* TODO : UI - Make the card heights uniform regardless of the description length; force the <p> tag to  */                        
+                        /* TODO : UI - Make the card heights uniform regardless of the description length; force the <p> tag to use; CSS selector?  */                        
                     }
 
                     <!-- ToolTip : Display full description on focus/hover -->
@@ -95,6 +95,9 @@
 @section Scripts {
     <script>
 
+        // ENHANCEMENT : if bloguser isAuthor of the blog, display text var swalMsgCreatePost "Please Create a new Post"
+
+        // BLOG : swal message w/js promise to redirect to new page after confirmation
         var swalMsgNoPosts = '@TempData["NoPosts"]'
         if (swalMsgNoPosts != "") {
             Swal.fire({

@@ -1,3 +1,10 @@
+﻿@{
+    /* TODO : Remove System Tags section; */
+    /* FEATURE : add Edit/Delete buttons if BlogUser is Authenticated and Authorized as Author of the post */
+    /* TODO : Test tag index of other Posts containing each tag */
+    
+}
+
 ﻿@using Microsoft.AspNetCore.Identity
 @using BlogProject.Areas.Identity
 @using BlogProject.Models
@@ -88,7 +95,9 @@
     <hr class="card-hr" />
     <br />
 
-
+    @{
+        /* REFERENCE : Insert count of x in html text  */
+    }
     <!-- COMMENT CARDS SECTION -->
     <div id="commentSection" class="d-block text-bg-dark text-center p-2">@Model.Post.Comments.Count COMMENT(S)</div>
 
