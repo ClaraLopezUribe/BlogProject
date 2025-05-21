@@ -11,7 +11,7 @@
 @model IPagedList<Post>
 
 @{
-    ViewData["Title"] = "Blog Posts";
+    // ViewData["Title"] = "Blog Posts";
 }
 
 @{
@@ -94,14 +94,14 @@
 
 @section Scripts {
     <script>
-
+        
         // ENHANCEMENT : if bloguser isAuthor of the blog, display text var swalMsgCreatePost "Please Create a new Post"
 
         // BLOG : swal message w/js promise to redirect to new page after confirmation
         var swalMsgNoPosts = '@TempData["NoPosts"]'
         if (swalMsgNoPosts != "") {
             Swal.fire({
-                icon: 'error',
+                icon: 'warning',
                 title: swalMsgNoPosts
             }).then(function(){window.location = "@Url.Action("Index","Home")";})           
         }
