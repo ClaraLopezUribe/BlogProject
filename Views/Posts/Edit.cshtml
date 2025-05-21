@@ -1,11 +1,9 @@
 ﻿@{
-    /* TODO : Edit the System Tags/ Reference List title to the Posts Create and Edit Views */
     /* BUG : Summernote edit tools are not keyboard accessible */
 }
 
 
-
-﻿@using BlogProject.Models
+@using BlogProject.Models
 @using BlogProject.Enums
 
 @inject BlogProject.Data.ApplicationDbContext context
@@ -16,15 +14,8 @@
     ViewData["Title"] = "Edit Post";
 }
 
-@{
-    /* TODO : Move the System Tags List to the Post Create and Edit Views */
 
-    /* TODO : Fix tags not saving in Post Edit */
-}
-
-<h1>Edit Post</h1>
-
-<h4>Post</h4>
+<h2>Edit Post</h2>
 <hr />
 <div class="row">
     <div class="col col-md-12">
@@ -56,10 +47,6 @@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
-            @{
-                /* TODO : Refactor Tags form group to make it responsive (mobile first design!) */
-            }
-
             <div class="form-group">
                 <div class="row mt-3">
                     <div class="col">
@@ -75,10 +62,10 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <button type="button" class="btn btn-primary btn-sm h-100 w-100 text-uppercase" name="Add" onclick="addTag()">Add</button>
-                            </div>
+                                <button type="button" class="btn btn-sm btn-primary btn-wide text-uppercase" name="Add" onclick="addTag()">Add</button>
+                            </div>   
                             <div class="col">
-                                <button type="button" class="btn btn-primary btn-sm h-100 w-100 text-uppercase" onclick="deleteTag()" name="Delete">Delete</button>
+                                <button type="button" class="btn btn-sm btn-danger btn-wide text-uppercase" name="Delete" onclick="deleteTag()">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -89,14 +76,14 @@
             </div>
 
             @{
-                /* FEATURE : Create shared view for system wide tags list to insert into Create and Edit Views???  */
-                /* TODO : Make taglist reference a form group input select?, then change addTag() button name to Add New Tag */
+                /* REFACTOR : Create shared view for system wide tags list to insert into multiple views???  */
+                /* FEATURE : Make the Tag Reference List a select input so that onClick, the tag gets added to the Post's TagList then change addTag() button name to Add New Tag */
             }
 
-            <!-- SYSTEM TAGS LIST -->
+            <!-- SYSTEM TAGS REFERENCE LIST -->
             <div class="col">
                 <aside>
-                    <div class="card">
+                    <div class="card mt-2">
                         <div class="card-body">
                             <div class="card-title fw-bold">TAG REFERENCE LIST</div>
                             <hr />
@@ -104,7 +91,7 @@
                                 @foreach (var tag in context.Tags.Select(t => t.Text.ToLower())
                                 .Distinct().ToList())
                                 {
-                                    <button disabled type="button" disabled id="AllTags" class="btn btn-sm btn-warning">
+                                    <button id="AllTags" disabled type="button" class="btn btn-sm btn-warning mb-2">
                                         #@tag
                                     </button>
                                 }
@@ -125,21 +112,25 @@
                 <span asp-validation-for="ReadyStatus" class="text-danger"></span>
             </div>
 
-            <div class="form-group mt-3">
-                <button type="submit" value="Save" class="btn btn-sm btn-primary w-100">Save</button>
+            <div class="row mt-4 mb-4">
+                <div class="col row-cols-1 form-group mb-2">
+                    <input type="submit" value="Save Changes" class="btn btn-primary rounded-3">
+                </div>
+                <div class="col row-cols-1 form-group mb-2">
+                    <input type="hidden" asp-for="Id" />
+                    <a asp-controller="Posts" asp-action="Delete" asp-route-id="@Model.Id" value="Delete Post" class="btn btn-danger rounded-3">Delete Post</a>
+                </div>
             </div>
-
         </form>
     </div>
-
-
 </div>
 
 @{
     /* TODO : Redirect to BlogPostIndex of this post's Blog*/
 }
 <div>
-    <a asp-action="Index">Back to List</a>
+    @* <a asp-action="BlogPostsIndex" asp-controller="Posts">Back to Blog Posts</a> *@
+    <a asp-action="Index" asp-controller="Home">Back to Blog Index </a>
 </div>
 
 @section Scripts {

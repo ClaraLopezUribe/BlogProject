@@ -35,7 +35,7 @@ namespace BlogProject.Controllers
             _imageService = imageService;
             _userManager = userManager;
             _blogSearchService = blogSearchService;
-        }
+        }    
 
         // GET : Posts/TagIndex
         public async Task<IActionResult> TagIndex(int? page, string tag)
@@ -65,14 +65,16 @@ namespace BlogProject.Controllers
         }
 
         // GET: Posts/Index
-        public async Task<IActionResult> Index() // Index of ALL Posts
+        public async Task<IActionResult> Index() // Index of ALL Posts of all Blogs
         {
             var applicationDbContext = _context.Posts.Include(p => p.Blog).Include(p => p.BlogUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
         //GET: Posts/BlogPostIndex
-        public async Task<IActionResult> BlogPostIndex(int? id, int? page) // Index of Posts in selected Blog
+
+        // Index of only the Posts in the selected Blog
+        public async Task<IActionResult> BlogPostIndex(int? id, int? page)
         {
             if (id == null)
             {
@@ -82,25 +84,44 @@ namespace BlogProject.Controllers
             var pageNumber = page ?? 1;
             var pageSize = 6;
 
-            var posts = await _context.Posts 
+            var posts = await _context.Posts
                 .Include(p => p.Blog)
-                .Where(p => p.BlogId == id) // Only include posts for the specified blog
-                .OrderByDescending(p => p.Created)         
-                .ToPagedListAsync(pageNumber,pageSize);
+                // Only include posts for the selected blog
+                .Where(p => p.BlogId == id) 
+                .OrderByDescending(p => p.Created)
+                .ToPagedListAsync(pageNumber, pageSize);
 
-            var blog = posts.FirstOrDefault()?.Blog; // Get the blog associated with the first post in the list
+            // Get the blog associated with the first post in the list
+            var blog = posts?.FirstOrDefault()?.Blog;
 
-                ViewData["HeaderImage"] = _imageService.DecodeImage(blog.ImageData, blog.ContentType);
-            ViewData["Title"] = "Post Details";
-            ViewData["MainText"] = blog.Name;
-            ViewData["SubText"] = blog.Description;
+            if (blog is not null)
+            {
+                var blogImage = _imageService.DecodeImage(blog.ImageData, blog.ContentType);
+                if (blogImage is null)
+                {
+                    blogImage = @Url.Content("~/assets/img/home-bg.jpg");
+                }
+                ViewData["HeaderImage"] = blogImage;
+                ViewData["Title"] = "Post Details";
+                ViewData["MainText"] = blog.Name;
+                ViewData["SubText"] = blog.Description;
+            }
+
+            if (posts.Count is 0)
+            {
+                TempData["NoPosts"] = "This blog has no posts yet!";
+            }
 
             return View(posts);
         }
+        
 
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(string slug)
         {
+
+            ViewData["Title"] = "Post Details";
+
             if (string.IsNullOrEmpty(slug)) return NotFound();
 
             var post = await _context.Posts
@@ -123,7 +144,7 @@ namespace BlogProject.Controllers
                     .Distinct().ToList()
             };
 
-                ViewData["HeaderImage"] = _imageService.DecodeImage(post.ImageData, post.ContentType);
+            ViewData["HeaderImage"] = _imageService.DecodeImage(post.ImageData, post.ContentType);
             ViewData["Title"] = "Post Details";
             ViewData["MainText"] = post.Title;
             ViewData["SubText"] = post.Abstract;
@@ -157,7 +178,7 @@ namespace BlogProject.Controllers
         // GET: Posts/Create
         public IActionResult Create(int? id)
         {
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name");
+            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", id); // selects the cooresponding blog in the dropdown field 
             return View();
         }
 
@@ -241,7 +262,7 @@ namespace BlogProject.Controllers
             return View(post);
         }
 
-        // GET: Posts/Edit/5
+        //GET: Posts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -257,8 +278,11 @@ namespace BlogProject.Controllers
             }
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
             ViewData["TagValues"] = string.Join(",", post.Tags.Select(t => t.Text));
+
             return View(post);
         }
+
+
 
         // POST: Posts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -277,7 +301,8 @@ namespace BlogProject.Controllers
                 try
                 {
                     // Get copy of original post from the database to preserve data that does not change, and update the data that does in the edit view 
-                    var newPost = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == id);
+                    var newPost = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == post.Id);
+
                     newPost.Updated = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
                     newPost.BlogId = post.BlogId;
                     newPost.Title = post.Title;
@@ -287,7 +312,6 @@ namespace BlogProject.Controllers
 
 
                     var newSlug = _slugService.UrlFriendly(post.Title);
-
                     if (newSlug != newPost.Slug)
                     {
                         if (_slugService.IsUnique(newSlug))
@@ -298,6 +322,8 @@ namespace BlogProject.Controllers
                         else
                         {
                             ModelState.AddModelError("Title", "This Title results in a duplicate slug. Please provide a unique title");
+                            ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", post.BlogUserId);
+                            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
                             ViewData["TagValues"] = string.Join(",", post.Tags.Select(t => t.Text));
 
                             return View(post);
@@ -320,6 +346,7 @@ namespace BlogProject.Controllers
                         _context.Add(new Tag()
                         {
                             PostId = post.Id,
+                            //PostId = newPost.Id,
                             BlogUserId = newPost.BlogUserId,
                             Text = tagText
                         });
@@ -339,7 +366,10 @@ namespace BlogProject.Controllers
                     }
                 }
 
-                return RedirectToAction("BlogPostIndex", "Posts", new { id = post.BlogId });           
+                return RedirectToAction("BlogPostIndex", "Posts", new { id = post.BlogId }); // Returns to the list of posts in the Edited Post's BlogId           
+
+                /* FEATURE : Use slug route to return to the post details view */
+
             }
 
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
@@ -375,13 +405,27 @@ namespace BlogProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts
+                .Include(p => p.Blog)
+                .Include(p => p.Tags)
+                .Include(p => p.Comments)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            /* TODO : I want to find the count of total posts in the blog so that if there are more than 0 after deleting current one, user gets redirected to the BlogPost Index of that blog instead of the home index  Currently, the blogPosts codeblock is not being hit because of faulty logic. */
+            var blogPosts = post.Blog.Posts;
+
+
             if (post != null)
             {
                 _context.Posts.Remove(post);
             }
 
             await _context.SaveChangesAsync();
+
+            if (blogPosts.Any())
+            {
+                return RedirectToAction("BlogPostIndex", "Posts", new { id = post.BlogId });
+            }
+
             return RedirectToAction("Index", "Home");
         }
 

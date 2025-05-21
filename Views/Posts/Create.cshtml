@@ -1,18 +1,20 @@
-﻿@using BlogProject.Models
+﻿@{
+    /* BUG : Summernote edit tools are not keyboard accessible */
+}
+
+
+@using BlogProject.Models
 @using BlogProject.Enums
+
+@inject BlogProject.Data.ApplicationDbContext context
 
 @model Post
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Post";
 }
 
-@{
-    /* TODO : Move the System Tags List to the Post Create and Edit Views */
-}
-
-
-<h1>Create a Post</h1>
+<h2>Create a Post</h2>
 <hr />
 <div class="row">
     <div class="col-md-6">
@@ -69,6 +71,32 @@
                         <select id="TagList" name="TagValues" multiple class="w-100"></select>
                     </div>
                 </div>
+            </div>
+
+            @{
+                /* REFACTOR : Create shared view for system wide tags list to insert into multiple views???  */
+                /* FEATURE : Make the Tag Reference List a select input so that onClick, the tag gets added to the Post's TagList then change addTag() button name to Add New Tag */
+            }
+
+            <!-- SYSTEM TAGS REFERENCE LIST -->
+            <div class="col">
+                <aside>
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <div class="card-title fw-bold">TAG REFERENCE LIST</div>
+                            <hr />
+                            <div class="tagView">
+                                @foreach (var tag in context.Tags.Select(t => t.Text.ToLower())
+                                .Distinct().ToList())
+                                {
+                                    <button id="AllTags" disabled type="button" class="btn btn-sm btn-warning mb-2">
+                                        #@tag
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </aside>
             </div>
 
             <div class="form-group">

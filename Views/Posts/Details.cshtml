@@ -5,7 +5,7 @@
     
 }
 
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @using BlogProject.Areas.Identity
 @using BlogProject.Models
 @using BlogProject.Enums
@@ -14,22 +14,10 @@
 @using X.PagedList.Extensions
 @using X.PagedList.EF
 
-
 @inject IImageService imageService
 @inject UserManager<BlogUser> userManager
 
 @model PostDetailViewModel
-
-@{
-    /* TODO : UI- Fix comment card styles */
-    /* TODO : Remove System Tags section; */
-
-}
-
-@{
-    ViewData["Title"] = "Post Details";
-}
-
 
 <!-- POST CONTENT -->
 <article class="mb-4">
@@ -56,16 +44,7 @@
             <a asp-action="TagIndex" asp-route-tag="@tag.Text.ToLower()" class="btn btn-sm btn-warning">#@tag.Text</a>
         }
     </div>
-
-    @{
-        /* FEATURE : Link to index of other Posts containing each tag */
-        
-    }
-<!-- SYSTEM TAGS -->
-    <div class="row">
-        
-    </div>
-</article>
+</article> 
 
 <hr />
 
