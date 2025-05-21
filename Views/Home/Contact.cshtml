@@ -1,6 +1,11 @@
 ﻿@using BlogProject.View_Models
 @model ContactMe
 
+@{
+    /* BUG : Summernote edit tools are not keyboard accessible */
+    /* ENHANCEMENT : When user sends Contact Me email message, notify that the message was sent correctly via pop-up */
+}
+
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
@@ -46,7 +51,7 @@
                 </div>
                 <br>
                 <div id="success"></div>
-                <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+                <button type="submit" class="btn btn-primary rounded-3" id="sendMessageButton">Send</button>
             </form>
         </div>
     </div>

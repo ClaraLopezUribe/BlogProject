@@ -27,12 +27,17 @@ namespace BlogProject.Controllers
         {
             var pageNumber = page ?? 1;
             var pageSize = 3;
-                                    
-            var blogs = _context.Blogs
-                //.Where(b => b.Posts.Any(p => p.ReadyStatus == ReadyStatus.ProductionReady))               
-                .Include(b => b.BlogUser)
+
+            
+            var blogs = await _context.Blogs
+                //TODO : Uncomment the following line to only show blogs with posts that are production ready
+                //.Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)) Wrap in if statement to allow admins to see all blogs regardless of ready status
+                //.Include(b => b.BlogUser)
+                //.Include(b => b.Posts)
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
+            
+            var posts = blogs.FirstOrDefault()?.Posts;
 
             if (ViewData["HeaderImage"] == null)
             {
@@ -41,11 +46,11 @@ namespace BlogProject.Controllers
            
             
             //ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
-            ViewData["Title"] = "Home - Blogs Index";
-            ViewData["MainText"] = "Clara-FYI-ng Thoughts";
+            ViewData["Title"] = "Home";
+            ViewData["MainText"] = "Clara-FYIng Thoughts";
             ViewData["Subtext"] = "A Collection of Blogs About Code, Careers, and Creativity";
             
-            return View(await blogs); 
+            return View(blogs); 
         }
 
         public IActionResult About()
