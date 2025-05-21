@@ -160,8 +160,7 @@ namespace BlogProject.Controllers
             return View(blog);
         }
 
-        // TODO : Prevent a blog with posts from being deleted; SweetAlert message to reassign a new blog to each post before deleting blog
-
+        
 
         // GET: Blogs/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -173,27 +172,64 @@ namespace BlogProject.Controllers
 
             var blog = await _context.Blogs
                 .Include(b => b.BlogUser)
+                .Include(b => b.Posts)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (blog == null)
             {
                 return NotFound();
             }
 
-            return View(blog);
+            // Prevent a blog containing posts from being deleted.
+            if (blog.Posts.Count is > 0)
+            {
+                TempData["ErrorMessage"] = "This blog has one or more posts. Please reassign or delete posts before deleting the blog";
+
+            }
+
+            return View(blog); //goes to deleteConfirmed action
         }
+
+
+//        if (blog.Posts.Count is not 0)
+//            {
+//                TempData["ErrorMessage"] = "This blog has one or more posts. Please reassign or delete posts before deleting the blog";
+//            }
+            
+//            if (blog.Posts.Count is not 0)
+//            {
+//                return RedirectToAction("BlogPostIndex", "Posts", new { id = blog.Id
+//});
+//            }
+//            else
+//{
+//    return View(blog);
+//}
+//        }
+
+
+
+
+
+
+
+
 
         // POST: Blogs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var blog = await _context.Blogs.FindAsync(id);
-            if (blog != null)
+            var blog = await _context.Blogs
+                .Include(b => b.Posts)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            // Prevent user from deleting a blog containing one or more posts
+            if (blog.Posts.Count is not 0)            
             {
                 _context.Blogs.Remove(blog);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
         }
 

@@ -44,11 +44,32 @@
 <div class="mb-4">
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger rounded-3" />
+        <input type="submit" asp-controller="Blogs" value="Confirm Delete" class="btn w-25 btn-danger rounded-3" /> |
+
+        <a asp-action="Index" asp-controller="Home">Back Home</a>
     </form>
 </div>    
 
 <div>
-    <a asp-action="Index" asp-controller="Home">Back Home</a>
+    
 </div>
 
+
+
+@section Scripts {
+    
+    <script>
+
+        // Will trigger onClick of the edit page Delete button if there are one or more posts in the Blog to be deleted
+        var swalMsg = '@TempData["ErrorMessage"]'
+        if (swalMsg != "") {
+            Swal.fire({
+                icon: 'error',
+                title: swalMsg,
+                time: 5000
+            }).then(function(){window.location = "@Url.Action("BlogPostIndex", "Posts", new { id = Model.Id })";})
+        }
+
+    </script>
+
+}

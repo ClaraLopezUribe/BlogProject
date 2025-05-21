@@ -41,7 +41,7 @@ namespace BlogProject.Models
         [Display(Name = "Image Type")]
         public string? ContentType { get; set; }
 
-        //Represents the physical file the user selects when creating new blog and selecting image; will not be saved in the data
+        //Represents the physical file the user selects when creating a new blog and selecting image; will not be saved in the data
         [NotMapped]
         public IFormFile? Image { get; set; }
 

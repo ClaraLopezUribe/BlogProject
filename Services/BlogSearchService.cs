@@ -1,5 +1,6 @@
 ﻿using BlogProject.Data;
 using BlogProject.Models;
+using Microsoft.EntityFrameworkCore;
 
 /* TODO : Uncomment all .Where(p => p.ReadyStatus == ReadyStatus.ProductionReady before publishing BlogProject */
 
@@ -16,7 +17,7 @@ namespace BlogProject.Services
 
         public IQueryable<Post> Search(string searchTerm)
         {
-            var posts = _context.Posts.AsQueryable();
+            var posts = _context.Posts.Include(p => p.Tags).AsQueryable();
             //.Where(p => p.ReadyStatus == ReadyStatus.ProductionReady)
             if (searchTerm != null)
             {
@@ -26,6 +27,7 @@ namespace BlogProject.Services
                     p.Title.ToLower().Contains(searchTerm) ||
                     p.Abstract.ToLower().Contains(searchTerm) ||
                     p.Content.ToLower().Contains(searchTerm) ||
+                    p.Tags.Any(tag => tag.Text.ToLower().Contains(searchTerm)) || // Fixed issue here
                     p.Comments.Any(c =>
                             c.Body.ToLower().Contains(searchTerm) ||
                             c.ModeratedBody.ToLower().Contains(searchTerm) ||
