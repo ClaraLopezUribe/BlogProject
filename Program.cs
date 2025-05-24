@@ -1,4 +1,5 @@
 using BlogProject.Data;
+using BlogProject.Helpers;
 using BlogProject.Models;
 using BlogProject.Services;
 using BlogProject.View_Models;
@@ -11,7 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-var connectionString = builder.Configuration.GetSection("pgSettings")["pgConnection"];
+//var connectionString = builder.Configuration.GetSection("pgSettings")["pgConnection"];
+
+var connectionString = ConnectionHelper.GetConnectionString(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
