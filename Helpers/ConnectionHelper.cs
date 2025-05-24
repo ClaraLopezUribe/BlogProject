@@ -4,7 +4,7 @@ namespace BlogProject.Helpers
 {
     public static class ConnectionHelper
     {
-        public static string ConnectionString(IConfiguration configuration)
+        public static string GetConnectionString(IConfiguration configuration)
         {
             // Get the connection string from the configuration
             var connectionString = configuration.GetSection("pgSettings")["pgConnection"];

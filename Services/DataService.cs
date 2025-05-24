@@ -104,16 +104,16 @@ namespace BlogProject.Services
 
 
 
-            // Guest Author Role User
+
+
+            // TODO : Seed Guest Author Role User
             //Step 1.3: Create a new instance of BlogUser
 
 
-            //Step 2.3: Use the UserManager to create a new user that is defined by adminUser
+            //Step 2.3: Use the UserManager to create a new user that is defined by GuestAuthor variable
 
 
-            //Step 3.3: Add this new user to the Aministrator role
-
-
+            //Step 3.3: Add this new user to the GuestAuthor role
 
         }
 
