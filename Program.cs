@@ -44,6 +44,9 @@ builder.Services.AddScoped<ISlugService, BasicSlugService>();
 
 var app = builder.Build();
 
+// Get access to DataHelper
+var scope = app.Services.CreateScope();
+await DataHelper.ManageDataAsync(scope.ServiceProvider);
 
 // Get access to registered DataService
 var dataService = app.Services.CreateScope()
