@@ -73,7 +73,8 @@ namespace BlogProject.Services
                 FirstName = "Clara",
                 LastName = "Lopez-Uribe",
                 PhoneNumber = "(123) 456-7890",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                DisplayName = "Clara Lopez-Uribe"
             };
 
             //Step 2.1: Use the UserManager to create a new user that is defined by adminUser variable
@@ -93,7 +94,8 @@ namespace BlogProject.Services
                 FirstName = "Clarita",
                 LastName = "Lopez",
                 PhoneNumber = "(123) 456-7891",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                DisplayName = "Clarita Lopez"
             };
 
             //Step 2.2: Use the UserManager to create a new user that is defined by modUser variable
