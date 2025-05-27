@@ -5,9 +5,8 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    BlogUser blogUser = (BlogUser)await UserManager.GetUserAsync(User);
-    var fullName = blogUser.FullName;
-    var firstName = blogUser.FirstName;
+    var blogUser = await UserManager.GetUserAsync(User);
+    var firstName = blogUser?.FirstName;
 
     <li class="nav-item">
         <a class="nav-link px-lg-3 py-3 py-lg-4" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @firstName!</a>
