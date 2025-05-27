@@ -9,11 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
-
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-//var connectionString = builder.Configuration.GetSection("pgSettings")["pgConnection"];
-
 var connectionString = ConnectionHelper.GetConnectionString(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
@@ -76,7 +71,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-
+// TODO : Check if SlugRoute is configured correctly
 // Create new MapControllerRoute to supersede default route using the Slug, sometimes refered to a "Vanity URL", which improves SEO
 app.MapControllerRoute(
     name: "SlugRoute",
