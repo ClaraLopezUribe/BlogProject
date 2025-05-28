@@ -15,7 +15,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddDefaultIdentity<BlogUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddDefaultUI() /* LEARN : Is this redundant? doesnt AddDefaultIdentity include the default UI?*/
                 .AddRoles<IdentityRole>()
@@ -26,10 +25,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages();
 
+
 // Register Custom Services
-
 builder.Services.AddScoped<DataService>();
-
 builder.Services.AddScoped<BlogSearchService>();
 
 // Register preconfigured instance of MailSettings
@@ -43,10 +41,6 @@ builder.Services.AddScoped<ISlugService, BasicSlugService>();
 
 
 var app = builder.Build();
-
-// Get access to DataHelper
-var scope = app.Services.CreateScope();
-await DataHelper.ManageDataAsync(scope.ServiceProvider);
 
 // Get access to registered DataService
 var dataService = app.Services.CreateScope()
