@@ -20,3 +20,5 @@
 
     }
 }
+
+/* LEARN : what exactly is an interface? What is the difference between the IImageService interface vs the BasicImageService? */

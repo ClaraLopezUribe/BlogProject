@@ -1,4 +1,6 @@
-﻿using BlogProject.Data;
+﻿/* LEARN : How can I back up the data in database programatically? Migrations are for creating & updating the database structure, but not for backing up data. How do I safeguard from losing critical user data? */
+
+using BlogProject.Data;
 using BlogProject.Enums;
 using BlogProject.Models;
 using Microsoft.AspNetCore.Identity;
@@ -64,7 +66,11 @@ namespace BlogProject.Services
 
             // Otherwise, create a few Users:
 
-            // Admin Role User
+
+            /* TODO : Define the permissions granted to each role in the system. For example, the Administrator role can create, edit, and delete blogs, posts, and comments of all users. The Moderator role can only edit and delete comments, except for their own original comments. The Guest Author role can only create, edit, and delete their own blogs and posts, including posts under another author's blog (maybe...tbd) */
+
+
+            // ADMIN ROLE USER
             //Step 1.1: Create a new instance of BlogUser
             var adminUser = new BlogUser()
             {
@@ -85,7 +91,7 @@ namespace BlogProject.Services
 
 
 
-            // Moderator Role User
+            // MODERATOR ROLE USER
             //Step 1.2: Create a new instance of BlogUser
             var modUser = new BlogUser()
             {
@@ -108,7 +114,9 @@ namespace BlogProject.Services
 
 
 
-            // TODO : Seed Guest Author Role User
+            /* FEATURE : Seed Guest Author Role User. This may be a good solution to DEMO this project by creating a user that is not an administrator or moderator, but still has access to the system. This user can be used to test the system without having to create a new user every time. */
+
+            // GUEST AUTHOR USER : Can create their own blogs and posts, but cannot edit or delete other users' blogs or posts. They can only view the blogs and posts of other users. They can also comment on blogs and posts, but cannot moderate comments. They can also view their own profile and edit their own profile information, but cannot edit other users' profiles. They can also view the list of all blogs and posts, but cannot edit/delete the details of other users' blogs and posts. They can also view the list of all comments, but cannot view the details of the comment's users. They can also view the list of all roles, but cannot view the details of other users' roles. They can also view the list of all permissions, but cannot view the details of other users' permissions.
             //Step 1.3: Create a new instance of BlogUser
 
 
@@ -116,6 +124,10 @@ namespace BlogProject.Services
 
 
             //Step 3.3: Add this new user to the GuestAuthor role
+
+
+            /* LEARN : How can a registered user apply for Guest Author Role permission? add a new view, or link to existing contact page? Where is the best location for a user to interact with this option? */
+
 
         }
 
