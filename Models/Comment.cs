@@ -11,8 +11,8 @@ namespace BlogProject.Models
 
 
         //FOREIGN KEYS (Primary keys of other classes/models):
-        public int? PostId { get; set; }
-        public string? BlogUserId { get; set; }
+        public int PostId { get; set; }
+        public required string BlogUserId { get; set; }
         public string? ModeratorId { get; set; }
 
 
@@ -20,7 +20,7 @@ namespace BlogProject.Models
         [Required]
         [StringLength(500, ErrorMessage = "The {0} must be at least {2} and no more than {1} characters long",  MinimumLength = 2)]
         [Display(Name = "Comment")]
-        public string Body { get; set; }
+        public required string Body { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Created Date")]
