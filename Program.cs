@@ -5,14 +5,17 @@ using BlogProject.Services;
 using BlogProject.View_Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container
+//var connectionString = configuration.GetConnectionString("DefaultConnection"); ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//var connectionString = configuration.GetSection("pgSettings")["pgConnection"];
 var connectionString = ConnectionHelper.GetConnectionString(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<BlogUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -41,6 +44,18 @@ builder.Services.AddScoped<ISlugService, BasicSlugService>();
 
 
 var app = builder.Build();
+
+//// REFERENCE SECTION: This section is for reference only implementation handled starting with the dataService variable
+//using (var scope = app.Services.CreateScope()) {
+//    var services = scope.ServiceProvider;
+//    var context = services.GetRequiredService<ApplicationDbContext>();
+
+//    // Apply any pending migrations and create the database if it doesn't exist
+//    await context.Database.MigrateAsync();
+
+//    // Run additional data management tasks
+//    await DataHelper.ManageDataAsync(scope.ServiceProvider);
+//}
 
 // Get access to registered DataService
 var dataService = app.Services.CreateScope()
