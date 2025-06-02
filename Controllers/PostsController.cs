@@ -410,7 +410,8 @@ namespace BlogProject.Controllers
                 .Include(p => p.Tags)
                 .Include(p => p.Comments)
                 .FirstOrDefaultAsync(p => p.Id == id);
-            /* TODO : I want to find the count of total posts in the blog so that if there are more than 0 after deleting current one, user gets redirected to the BlogPost Index of that blog instead of the home index  Currently, the blogPosts codeblock is not being hit because of faulty logic. */
+
+            /* ENHANCEMENT : Find the count of total posts in the blog so that if there are more than 0 after deleting current one, user gets redirected to the BlogPost Index of that blog instead of the home index  Currently, the blogPosts codeblock is not being hit because of faulty logic. */
             var blogPosts = post.Blog.Posts;
 
 
