@@ -57,14 +57,29 @@ namespace BlogProject.Controllers
         {
             if (ViewData["HeaderImage"] == null)
             {
-                ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
+                ViewData["HeaderImage"] = @Url.Content("~/assets/img/The-Lake.jpg");
             }
+
+            ViewData["Title"] = "About";
+            ViewData["MainText"] = "About Me";
+            ViewData["Subtext"] = "My Journey. My Story.";
+
+
 
             return View();
         }
 
         public IActionResult Contact()
         {
+            if (ViewData["HeaderImage"] == null)
+            {
+                ViewData["HeaderImage"] = @Url.Content("~/assets/img/contact-bg.jpg");
+            }
+
+            ViewData["Title"] = "Contact Me";
+            ViewData["MainText"] = "Let's Connect!";
+            ViewData["Subtext"] = "";
+
             return View();
         }
 

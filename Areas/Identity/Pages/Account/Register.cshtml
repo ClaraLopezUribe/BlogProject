@@ -2,6 +2,7 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    ViewData["HeaderImage"] = Url.Content("~/assets/img/drew-beamer-register-unsplash.jpg");
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -50,7 +51,7 @@
                 <label asp-for="Input.ConfirmPassword"></label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary rounded-3">Register</button>
         </form>
     </div>
 
@@ -58,7 +59,7 @@
         /* ENHANCEMENT : Add 3rd party authentication here */
     }
 
-    <div class="col-md-6 col-md-offset-2">
+@*     <div class="col-md-6 col-md-offset-2">
         <section>
             <h3>Use another service to register.</h3>
             <hr />
@@ -91,7 +92,7 @@
         </section>
     </div>
 </div>
-
+ *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
