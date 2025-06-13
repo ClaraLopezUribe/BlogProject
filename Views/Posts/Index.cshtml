@@ -1,4 +1,9 @@
-﻿@using BlogProject.Services
+﻿@{
+    /* DELETE : Do I NEED this page? if no, Delete Page and Post Controller action. if yes, add logic so only admin can access this page */
+}
+
+
+@* @using BlogProject.Services
 @using BlogProject.Models
 
 @inject IImageService imageService
@@ -9,9 +14,7 @@
     ViewData["Title"] = "All Posts Index";
 }
 
-@{
-    /* DELETE : Do I NEED this page? if not, Delete Page and Post Controller action */
-}
+
 
 <h1>Index</h1>
 
@@ -55,3 +58,4 @@
         }
     </tbody>
 </table>
+ *@

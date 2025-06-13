@@ -27,11 +27,11 @@ namespace BlogProject.Controllers
         }
         /* TODO : Delete list of Blogs Index View and correspondeing IActionResult if not needed */
         // GET: Blogs/Index List (Not the Landing Page)
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Blogs.Include(b => b.BlogUser);
-            return View(await applicationDbContext.ToListAsync());
-        }
+        //public async Task<IActionResult> Index()
+        //{
+        //    var applicationDbContext = _context.Blogs.Include(b => b.BlogUser);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
 
         // GET: Blogs/Details/5
         public async Task<IActionResult> Details(int? id)

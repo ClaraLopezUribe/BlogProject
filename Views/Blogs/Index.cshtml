@@ -1,12 +1,14 @@
-﻿@using BlogProject.Services
+﻿@{
+    /* DELETE : Do I need this page? if not Delete along with BlogsController Index action */
+}
+
+
+@* @using BlogProject.Services
 @using BlogProject.Models
 @model IEnumerable<Blog>
 @inject IImageService imageService
 
 
-@{
-    /* DELETE : Do I need this page? if not Delete along with BlogsController Index action */
-}
 
 @{
     ViewData["Title"] = "Index";
@@ -69,3 +71,4 @@
         }
     </tbody>
 </table>
+ *@
