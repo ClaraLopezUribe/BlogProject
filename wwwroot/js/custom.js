@@ -83,7 +83,6 @@ function deleteTag() {
 
 
 // On form submission, select all of the entries on select list - jquery
-
 $("form").on("submit", function () {
     $("#TagList option").prop("selected", "selected");
 })
@@ -99,7 +98,6 @@ if (tagValues != '') {
         index++;
     }
 }
-
 
 function ReplaceTag(tag, index) {
     let newOption = new Option(tag, tag);
