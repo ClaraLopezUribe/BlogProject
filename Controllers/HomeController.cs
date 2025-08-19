@@ -31,7 +31,7 @@ namespace BlogProject.Controllers
             
             var blogs = await _context.Blogs
                 //TODO : Uncomment the following line to only show blogs with posts that are production ready
-                /*.Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady))*/ /*Wrap in if statement to allow admins to see all blogs regardless of ready status*/
+                .Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)) /*Wrap in if statement to allow admins to see all blogs regardless of ready status*/
                 .Include(b => b.BlogUser)
                 .Include(b => b.Posts)
                 .OrderByDescending(b => b.Created)
