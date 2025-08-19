@@ -76,7 +76,10 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// BLOG : Commented out the HTTPS redirection because Railway handles HTTPS redirections externally. The following line is commented out to prevent conflicts with Railway's HTTPS handling that caused errors to Identity pages (like Forgot Password, Register, etc.)
+//app.UseHttpsRedirection();
+
+
 app.UseStaticFiles();
 
 app.UseRouting();
