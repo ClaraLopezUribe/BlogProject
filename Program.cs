@@ -34,14 +34,18 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<DataService>();
 builder.Services.AddScoped<BlogSearchService>();
 
-// Register preconfigured instance of MailSettings
+// Configure mail settings
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddScoped<IBlogEmailSender, EmailService>();
 
 // Register Custom Interface Services
 builder.Services.AddScoped<IImageService, BasicImageService>();
-
 builder.Services.AddScoped<ISlugService, BasicSlugService>();
+
+// Configure forwarded headers
+// LEARN : As per ClaudeSonnet 3.5' recommendation, Instead of UseHttpsRedirection, handle schemes in the URL generation
+builder.Services.Configure<ForwardedHeadersOptions>(options => 
+    { options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto; });
 
 
 var app = builder.Build();
@@ -92,8 +96,7 @@ else
 // BLOG : Commented out the HTTPS redirection because Railway handles HTTPS redirections externally and I thought that following line was causing conflicts that caused errors to Identity pages (like Forgot Password, Register, etc.) However that might not be the case. I will need to test this again later.
 //app.UseHttpsRedirection();
 
-// LEARN : As per ClaudeSonnet 3.5' recommendation, Instead of UseHttpsRedirection, handle schemes in the URL generation
-builder.Services.Configure<ForwardedHeadersOptions>(options => { options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto; });
+
 
 app.UseStaticFiles();
 
