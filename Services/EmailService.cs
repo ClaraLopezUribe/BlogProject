@@ -28,7 +28,7 @@ namespace BlogProject.Services
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.Auto);
+            smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
             smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
 
             await smtp.SendAsync(email);
@@ -50,7 +50,7 @@ namespace BlogProject.Services
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.Auto);
+            smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
             smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
 
             await smtp.SendAsync(email);
