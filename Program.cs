@@ -50,17 +50,18 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
-//// REFERENCE SECTION: This section is for reference only implementation handled starting with the dataService variable
-//using (var scope = app.Services.CreateScope()) {
-//    var services = scope.ServiceProvider;
-//    var context = services.GetRequiredService<ApplicationDbContext>();
+//// LEARN : I had commented out this section because I thought the implementation was handled starting with the dataService variable. After deploying to Railway, and running across errors with identity pages, I am not sure if that is the case. I need to test this further.
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
 
-//    // Apply any pending migrations and create the database if it doesn't exist
-//    await context.Database.MigrateAsync();
+    // Apply any pending migrations and create the database if it doesn't exist
+    await context.Database.MigrateAsync();
 
-//    // Run additional data management tasks
-//    await DataHelper.ManageDataAsync(scope.ServiceProvider);
-//}
+    // Run additional data management tasks
+    await DataHelper.ManageDataAsync(scope.ServiceProvider);
+}
 
 // Get access to registered DataService
 var dataService = app.Services.CreateScope()
