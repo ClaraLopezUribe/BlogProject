@@ -88,24 +88,10 @@ namespace BlogProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Contact(ContactMe model)
         {
-            try
-            { 
-                // Incorporate the information entered by the user to the model, then leverage the email sender service to send the email
-                model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
-                await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                // Log the exception details
-                _logger.LogError(ex, "Error sending contact email");
-                
-                // Add error to ModelState
-                ModelState.AddModelError(string.Empty, "An error occurred while sending your message. Please try again later.");
-
-                // Return to form with error message
-                return View(model);
-            }
+            // Incorporate the information entered by the user to the model, then leverage the email sender service to send the email
+            model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
+            await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
+            return RedirectToAction("Index");
 
         }
 

@@ -3,7 +3,6 @@ using BlogProject.Helpers;
 using BlogProject.Models;
 using BlogProject.Services;
 using BlogProject.View_Models;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
@@ -73,27 +72,13 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-
-    // LEARN : As per ClaudeSonnet 3.5' recommendation, Configure forward headers
-    app.Use((context, next) =>
-    {
-        if (context.Request.Headers["X-Forwarded-Proto"].ToString() == "https")
-        {
-            context.Request.Scheme = "https";
-        }
-        return next();
-    });
-
-    // LEARN : Only use HSTS in production. Read docs to understand why and how to change the value from the default 30 days
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 // BLOG : Commented out the HTTPS redirection because Railway handles HTTPS redirections externally and I thought that following line was causing conflicts that caused errors to Identity pages (like Forgot Password, Register, etc.) However that might not be the case. I will need to test this again later.
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
-// LEARN : As per ClaudeSonnet 3.5' recommendation, Instead of UseHttpsRedirection, handle schemes in the URL generation
-builder.Services.Configure<ForwardedHeadersOptions>(options => { options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto; });
 
 app.UseStaticFiles();
 
