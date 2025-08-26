@@ -33,31 +33,33 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<DataService>();
 builder.Services.AddScoped<BlogSearchService>();
 
-// Register preconfigured instance of MailSettings
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-builder.Services.AddScoped<IBlogEmailSender, EmailService>();
-
 // Register Custom Interface Services
 builder.Services.AddScoped<IImageService, BasicImageService>();
-
 builder.Services.AddScoped<ISlugService, BasicSlugService>();
+builder.Services.AddScoped<IBlogEmailSender, EmailService>();
+
+// Register preconfigured instance of MailSettings
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 
 var app = builder.Build();
+var scope = app.Services.CreateScope();
+
+// Get the mmost recent Database Context
+await DataHelper.ManageDataAsync(scope.ServiceProvider);
 
 // LEARN : Explain this code. Some of it seems to be redundant from DataHelper.cs
-// Get access to the Context
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var context = services.GetRequiredService<ApplicationDbContext>();
 
-    // Apply any pending migrations and create the database if it doesn't exist
-    await context.Database.MigrateAsync();
+//    // Apply any pending migrations and create the database if it doesn't exist
+//    await context.Database.MigrateAsync();
 
-    // Run additional data management tasks
-    await DataHelper.ManageDataAsync(scope.ServiceProvider);
-}
+//    // Run additional data management tasks
+//    await DataHelper.ManageDataAsync(scope.ServiceProvider);
+//}
 
 // Get access to registered DataService
 var dataService = app.Services.CreateScope()
@@ -78,9 +80,10 @@ else
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
+
 // BLOG : Commented out the HTTPS redirection because Railway handles HTTPS redirections externally and I thought that following line was causing conflicts that caused errors to Identity pages (like Forgot Password, Register, etc.) However that might not be the case. I will need to test this again later.
 //app.UseHttpsRedirection();
-
 
 app.UseStaticFiles();
 
@@ -94,7 +97,6 @@ app.MapControllerRoute(
     name: "SlugRoute",
     pattern: "BlogPosts/UrlFriendly/{slug}",
     defaults: new { controller = "Posts", action = "Details" });
-
 
 app.MapControllerRoute(
     name: "default",
