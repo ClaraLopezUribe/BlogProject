@@ -19,7 +19,8 @@ namespace BlogProject.Areas.Identity.Pages.Account
     public class RegisterConfirmationModel : PageModel
     {
         private readonly UserManager<BlogUser> _userManager;
-        private readonly IEmailSender _sender;
+        // TODO: Find out why _sender is ths inactive here!!! Is this the cause of of my Identity page issues?
+        private readonly IEmailSender _sender; 
 
         public RegisterConfirmationModel(UserManager<BlogUser> userManager, IEmailSender sender)
         {
@@ -60,7 +61,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
             }
 
             Email = email;
-            // Once you add a real email sender, you should remove this code that lets you confirm the account
+            // TODO : Once you add a real email sender, you should remove this code that lets you confirm the account
             //DisplayConfirmAccountLink = true;
             if (DisplayConfirmAccountLink)
             {
@@ -70,7 +71,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
                 EmailConfirmationUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
-                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    values: new { area = "Identity", userId = "userId", code = "code", returnUrl = "returnUrl" },
                     protocol: Request.Scheme);
             }
 
