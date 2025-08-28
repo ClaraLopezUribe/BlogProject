@@ -30,37 +30,38 @@ builder.Services.AddRazorPages();
 
 
 // Register Custom Services
-builder.Services.AddScoped<DataService>();
-builder.Services.AddScoped<BlogSearchService>();
-
-// Register Custom Interface Services
 builder.Services.AddScoped<IImageService, BasicImageService>();
 builder.Services.AddScoped<ISlugService, BasicSlugService>();
-builder.Services.AddScoped<IBlogEmailSender, EmailService>();
+builder.Services.AddScoped<BlogSearchService>();
+builder.Services.AddScoped<DataService>();
 
-// Register preconfigured instance of MailSettings
+// Register preconfigured instance of MailSettings and EmailService
+builder.Services.AddScoped<IBlogEmailSender, EmailService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 
 var app = builder.Build();
 var scope = app.Services.CreateScope();
 
-// Get the mmost recent Database Context
 await DataHelper.ManageDataAsync(scope.ServiceProvider);
 
-// LEARN : Explain this code. Some of it seems to be redundant from DataHelper.cs
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    var context = services.GetRequiredService<ApplicationDbContext>();
 
-//    // Apply any pending migrations and create the database if it doesn't exist
-//    await context.Database.MigrateAsync();
+//// LEARN : Explain this code. Some of it seems to be redundant from DataHelper.cs
+/// TODO : DELETE this section
+////using (var scope = app.Services.CreateScope())
+////{
+////    var services = scope.ServiceProvider;
+////    var context = services.GetRequiredService<ApplicationDbContext>();
 
-//    // Run additional data management tasks
-//    await DataHelper.ManageDataAsync(scope.ServiceProvider);
-//}
+////    // Apply any pending migrations and create the database if it doesn't exist
+////    await context.Database.MigrateAsync();
 
+////    // Run additional data management tasks
+////    await DataHelper.ManageDataAsync(scope.ServiceProvider);
+////}
+
+
+//// COMMIT 26327f4 : Jan 2, 2025
 // Get access to registered DataService
 var dataService = app.Services.CreateScope()
                      .ServiceProvider.GetRequiredService<DataService>();
