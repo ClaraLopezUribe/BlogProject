@@ -43,7 +43,7 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 var app = builder.Build();
 var scope = app.Services.CreateScope();
 
-await DataHelper.ManageDataAsync(scope.ServiceProvider);
+//await DataHelper.ManageDataAsync(scope.ServiceProvider);
 
 
 //// LEARN : Explain this code. Some of it seems to be redundant from DataHelper.cs
