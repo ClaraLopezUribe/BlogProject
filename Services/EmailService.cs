@@ -85,23 +85,23 @@ namespace BlogProject.Services
 
 
 
-        public async Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            email.To.Add(MailboxAddress.Parse(emailTo));
-            email.Subject = subject;
+            var newEmail = new MimeMessage();
+            newEmail.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+            newEmail.To.Add(MailboxAddress.Parse(email));
+            newEmail.Subject = subject;
 
             var builder = new BodyBuilder();
             builder.HtmlBody = htmlMessage;
 
-            email.Body = builder.ToMessageBody();
+            newEmail.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
             smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
             smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
 
-            await smtp.SendAsync(email);
+            await smtp.SendAsync(newEmail);
 
             smtp.Disconnect(true);
 
