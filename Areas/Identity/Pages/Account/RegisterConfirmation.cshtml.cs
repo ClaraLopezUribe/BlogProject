@@ -20,7 +20,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
     {
         private readonly UserManager<BlogUser> _userManager;
         // TODO: Find out why _sender is ths inactive here!!! Is this the cause of of my Identity page issues?
-        private readonly IEmailSender _sender; 
+        private readonly IEmailSender _sender;
 
         public RegisterConfirmationModel(UserManager<BlogUser> userManager, IEmailSender sender)
         {
@@ -71,7 +71,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
                 EmailConfirmationUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
-                    values: new { area = "Identity", userId = "userId", code = "code", returnUrl = "returnUrl" },
+                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);
             }
 
