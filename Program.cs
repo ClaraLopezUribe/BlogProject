@@ -60,11 +60,12 @@ var scope = app.Services.CreateScope();
 ////    await DataHelper.ManageDataAsync(scope.ServiceProvider);
 ////}
 
-
+var dataService = scope.ServiceProvider.GetRequiredService<DataService>();
 //// COMMIT 26327f4 : Jan 2, 2025
 // Get access to registered DataService
-var dataService = app.Services.CreateScope()
-                     .ServiceProvider.GetRequiredService<DataService>();
+//var dataService = app.Services.CreateScope()
+//                     .ServiceProvider.GetRequiredService<DataService>();
+
 // Run initialization ManageDataAsync()
 await dataService.ManageDataAsync();
 
