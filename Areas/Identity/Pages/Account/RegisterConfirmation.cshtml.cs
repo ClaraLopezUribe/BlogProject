@@ -61,8 +61,8 @@ namespace BlogProject.Areas.Identity.Pages.Account
             }
 
             Email = email;
-            // TODO : Once you add a real email sender, you should remove this code that lets you confirm the account
-            //DisplayConfirmAccountLink = true;
+            // LEARN : DisplayConfirmLink = true was commented out. Once you add a real email sender, you should remove this code that lets you confirm the account
+            DisplayConfirmAccountLink = true;
             if (DisplayConfirmAccountLink)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
