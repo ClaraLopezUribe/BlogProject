@@ -46,12 +46,14 @@ namespace BlogProject.Services
 
             newEmail.Sender = MailboxAddress.Parse(emailSender);
 
-            // LEARN : was this loop in ContactPro because an email could be sent to a group consisting of multiple emails? is this a feature that could be needed in the BlogProject? If not delete.
-            foreach (var emailAddress in email.Split(";"))
-            {
-                newEmail.To.Add(MailboxAddress.Parse(emailAddress));
-            }
 
+            // LEARN : was this loop in ContactPro because an email could be sent to a group consisting of multiple emails? is this a feature that could be needed in the BlogProject? If not delete.
+            //foreach (var emailAddress in email.Split(";"))
+            //{
+            //    newEmail.To.Add(MailboxAddress.Parse(emailAddress));
+            //}
+
+            newEmail.To.Add(MailboxAddress.Parse(email));
             newEmail.Subject = subject;
 
             BodyBuilder emailBody = new();
