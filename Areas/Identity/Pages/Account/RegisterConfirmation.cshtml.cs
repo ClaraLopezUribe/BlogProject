@@ -61,8 +61,8 @@ namespace BlogProject.Areas.Identity.Pages.Account
             }
 
             Email = email;
-            // LEARN : DisplayConfirmLink = true was commented out. Once you add a real email sender, you should remove this code that lets you confirm the account
-            DisplayConfirmAccountLink = true;
+            // HACK : DisplayConfirmLink = true; ***** This line of code lets the user confirm the account from a confirmation page directly in the app. Once you add a functional email sender, it should deleted *****
+            
             if (DisplayConfirmAccountLink)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
@@ -71,7 +71,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
                 EmailConfirmationUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
-                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    values: new { area = "Identity", userId, code, returnUrl },
                     protocol: Request.Scheme);
             }
 
