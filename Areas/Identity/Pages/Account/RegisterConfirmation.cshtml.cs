@@ -2,9 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using BlogProject.Models;
 using Microsoft.AspNetCore.Identity;
@@ -18,14 +16,10 @@ namespace BlogProject.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterConfirmationModel : PageModel
     {
-        private readonly UserManager<BlogUser> _userManager;
-        // TODO: Find out why _sender is ths inactive here!!! Is this the cause of of my Identity page issues?
-        private readonly IEmailSender _sender;
-
-        public RegisterConfirmationModel(UserManager<BlogUser> userManager, IEmailSender sender)
+        private readonly UserManager<BlogUser> _userManager;        
+        public RegisterConfirmationModel(UserManager<BlogUser> userManager )
         {
             _userManager = userManager;
-            _sender = sender;
         }
 
         /// <summary>
@@ -61,19 +55,19 @@ namespace BlogProject.Areas.Identity.Pages.Account
             }
 
             Email = email;
-            // HACK : DisplayConfirmLink = true; ***** This line of code lets the user confirm the account from a confirmation page directly in the app. Once you add a functional email sender, it should deleted *****
-            
-            if (DisplayConfirmAccountLink)
-            {
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                EmailConfirmationUrl = Url.Page(
-                    "/Account/ConfirmEmail",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId, code, returnUrl },
-                    protocol: Request.Scheme);
-            }
+            // HACK :  ***** The following code lets the user confirm their account from the RegisterConfirmation page directly in the app. Once you add a functional email sender, it should deleted *****
+            //DisplayConfirmLink = true;
+            //if (DisplayConfirmAccountLink)
+            //{
+            //    var userId = await _userManager.GetUserIdAsync(user);
+            //    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            //    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            //    EmailConfirmationUrl = Url.Page(
+            //        "/Account/ConfirmEmail",
+            //        pageHandler: null,
+            //        values: new { area = "Identity", userId, code, returnUrl },
+            //        protocol: Request.Scheme);
+            //}
 
             return Page();
         }
