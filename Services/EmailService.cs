@@ -88,7 +88,7 @@ namespace BlogProject.Services
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             var newEmail = new MimeMessage();
-            newEmail.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+            newEmail.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
             newEmail.To.Add(MailboxAddress.Parse(email));
             newEmail.Subject = subject;
 
