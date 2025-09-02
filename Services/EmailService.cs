@@ -19,30 +19,64 @@ namespace BlogProject.Services
         {
             var myEmail = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
 
-            var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(emailFrom));
-            email.To.Add(MailboxAddress.Parse(myEmail));
-            email.Subject = subject;
+            if (string.IsNullOrEmpty(emailFrom) || !MailboxAddress.TryParse(emailFrom,out var from))
+            {
+                throw new ArgumentException("A valid From email is required.", nameof(emailFrom));
+            }
+            else
+            {
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse(emailFrom));
+                email.To.Add(MailboxAddress.Parse(myEmail));
+                email.Subject = subject;
 
-            var builder = new BodyBuilder();
-            builder.HtmlBody = $"<b>{name}</b> has sent you an email and can be reached at: <b>{emailFrom}</b><br/><br/>{htmlMessage}";
+                var builder = new BodyBuilder();
+                builder.HtmlBody = $"<b>{name}</b> has sent you an email and can be reached at: <b>{emailFrom}</b><br/><br/>{htmlMessage}";
 
-            email.Body = builder.ToMessageBody();
+                email.Body = builder.ToMessageBody();
 
-            using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
+                // Log into smtp client
+                using SmtpClient smtpClient = new();
 
-            await smtp.SendAsync(email);
+                try
+                {
+                    var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
+                    var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+                    var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
 
-            smtp.Disconnect(true);
+                    await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+                    await smtpClient.AuthenticateAsync(myEmail, password);
+
+                    await smtpClient.SendAsync(email);
+                    await smtpClient.DisconnectAsync(true);
+                }
+                catch (Exception ex)
+                {
+                    var error = ex.Message;
+                    throw;
+                }
+        }
+
+            //using var smtp = new SmtpClient();
+            //smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
+            //smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
+
+            //await smtp.SendAsync(email);
+
+            //smtp.Disconnect(true);
 
         }
+
+
+
+
         //// **** Refactored to mirror ContactPro EmailService **** ////
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             // Use null coalescing operator to instruct email sender to get the local value, but if null will get the right hand side value // LEARN : Why check local value first and not the Environment value???
             var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
+
+            
 
             MimeMessage newEmail = new();
 
