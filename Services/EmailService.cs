@@ -4,6 +4,8 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
+// TODO : WRITE AND EMAIL CONNECTION HELPER FOR EMAIL SERVICE TO USE TO GET CONNECTION STRING
+
 namespace BlogProject.Services
 {
     public class EmailService : IBlogEmailSender
@@ -18,8 +20,7 @@ namespace BlogProject.Services
         public async Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
         {
             var myEmail = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
-
-            if (string.IsNullOrEmpty(emailFrom) || !MailboxAddress.TryParse(emailFrom,out var from))
+            if (string.IsNullOrWhiteSpace(emailFrom) || !MailboxAddress.TryParse(emailFrom, out var mailbox))
             {
                 throw new ArgumentException("A valid From email is required.", nameof(emailFrom));
             }
@@ -55,7 +56,7 @@ namespace BlogProject.Services
                     var error = ex.Message;
                     throw;
                 }
-        }
+            }
 
             //using var smtp = new SmtpClient();
             //smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
