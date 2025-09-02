@@ -17,9 +17,11 @@ namespace BlogProject.Services
 
         public async Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
         {
+            var myEmail = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
+
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            email.To.Add(MailboxAddress.Parse(_mailSettings.Mail));
+            email.From.Add(MailboxAddress.Parse(emailFrom));
+            email.To.Add(MailboxAddress.Parse(myEmail));
             email.Subject = subject;
 
             var builder = new BodyBuilder();
