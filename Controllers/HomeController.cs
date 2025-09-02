@@ -91,6 +91,7 @@ namespace BlogProject.Controllers
             // Incorporate the information entered by the user to the model, then leverage the email sender service to send the email
             model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
             await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
+            // TODO : if successfully sent, display confirmation message that email was sent
             return RedirectToAction("Index");
 
         }
