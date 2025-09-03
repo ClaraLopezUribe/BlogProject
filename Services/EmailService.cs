@@ -122,16 +122,22 @@ namespace BlogProject.Services
         //}
 
 
-        // **** WORKING COPY **** //
+        // ***** WORKING COPY ***** //
         public async Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
         {
+            /*** Validate the email address ***/
             if (string.IsNullOrWhiteSpace(emailTo) || !MailboxAddress.TryParse(emailTo, out var mailbox))
             {
                 throw new ArgumentException("A valid From email is required.", nameof(emailTo));
             }
 
+            /*** Load SMTP settings from environment variables ***/
             var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
+            var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
+            var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+            var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
 
+            //***Create the email ***
             MimeMessage newEmail = new();
             newEmail.From.Add(MailboxAddress.Parse(emailSender));
             newEmail.To.Add(MailboxAddress.Parse(emailTo));
@@ -139,25 +145,41 @@ namespace BlogProject.Services
 
             BodyBuilder emailBody = new();
             emailBody.HtmlBody = htmlMessage;
-
             newEmail.Body = emailBody.ToMessageBody();
 
-            // Log into smtp client
+            /*** Log into smtp client ***/
             using SmtpClient smtp = new();
 
-            var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
-            var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
-            var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
+            try
+            {
+                /*** Connect to SMTP server ***/
+                smtp.Connect(host, port, SecureSocketOptions.StartTls);
 
-            smtp.Connect(host, port, SecureSocketOptions.StartTls);
-            smtp.Authenticate(emailSender, password);
+                /*** Authenticate ***/
+                smtp.Authenticate(emailSender, password);
 
-            await smtp.SendAsync(newEmail);
-
-            smtp.Disconnect(true);
+                /*** Send the email ***/
+                await smtp.SendAsync(newEmail);
+            }
+            /***CATCH and log any errors ***/
+            catch (Exception ex)
+            {
+                //LOG TIMEOUT EXCEPTIONS SPECIFICALLY
+                //LOG ANY OTHER ERRORS
+                
+                var error = ex.Message;
+                throw;
+            }
+            //*** FINALLY, DISCONNECT ***
+            finally
+            {
+                if (smtp.IsConnected)
+                {
+                    await smtp.DisconnectAsync(true);
+                }
+            }
 
             // Optional: Add code to allow attachments to be included
-
         }
     }
 }
@@ -186,6 +208,59 @@ namespace BlogProject.Services
 
 //            // Optional: Add code to allow attachments to be included
 
+//        }
+//    }
+//}
+
+//        // ***** COPILOT SUGGESTIONS *****
+//        public async Task<bool> SendEmailAsync(string recipientEmail, string subject, string htmlMessage)
+//        {
+//            // Load SMTP settings from environment variables
+//            string smtpHost = Environment.GetEnvironmentVariable("MAIL_HOST");
+//            int smtpPort = int.Parse(Environment.GetEnvironmentVariable("MAIL_PORT") ?? "587");
+//            string smtpUser = Environment.GetEnvironmentVariable("MAIL_USER");
+//            string smtpPass = Environment.GetEnvironmentVariable("MAIL_PASSWORD");
+
+//            using var smtpClient = new MailKit.Net.Smtp.SmtpClient();
+
+//            try
+//            {
+//                // Connect to SMTP server
+//                await smtpClient.ConnectAsync(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+
+//                // Authenticate
+//                await smtpClient.AuthenticateAsync(smtpUser, smtpPass);
+
+//                // Create the email
+//                var email = new MimeKit.MimeMessage();
+//                email.From.Add(new MimeKit.MailboxAddress("My Blog", smtpUser));
+//                email.To.Add(new MimeKit.MailboxAddress("", recipientEmail));
+//                email.Subject = subject;
+//                email.Body = new MimeKit.TextPart(MimeKit.Text.TextFormat.Html) { Text = htmlMessage };
+
+//                // Send the email
+//                await smtpClient.SendAsync(email);
+
+//                return true; // Success
+//            }
+//            catch (System.TimeoutException ex)
+//            {
+//                // Log timeout specifically
+//                Console.Error.WriteLine($"Email send timed out: {ex.Message}");
+//                return false;
+//            }
+//            catch (Exception ex)
+//            {
+//                // Log any other errors
+//                Console.Error.WriteLine($"Error sending email: {ex.Message}");
+//                return false;
+//            }
+//            finally
+//            {
+//                // Always disconnect
+//                if (smtpClient.IsConnected)
+//                    await smtpClient.DisconnectAsync(true);
+//            }
 //        }
 //    }
 //}
