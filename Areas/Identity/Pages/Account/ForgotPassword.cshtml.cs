@@ -44,7 +44,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public required string Email { get; set; }
         }
 
         public async Task<IActionResult> OnPostAsync()
