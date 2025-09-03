@@ -4,7 +4,6 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
-// TODO : WRITE AND EMAIL CONNECTION HELPER FOR EMAIL SERVICE TO USE TO GET CONNECTION STRING
 
 namespace BlogProject.Services
 {
@@ -67,68 +66,8 @@ namespace BlogProject.Services
                 }
             }
 
-            //using var smtp = new SmtpClient();
-            //smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
-            //smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
-
-            //await smtp.SendAsync(email);
-
-            //smtp.Disconnect(true);
 
         }
-
-
-
-
-        //        //// **** Refactored to mirror ContactPro EmailService **** ////
-        //        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
-        //        {
-        //            // Use null coalescing operator to instruct email sender to get the local value, but if null will get the right hand side value from Railway
-        //            var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
-
-        //            MimeMessage newEmail = new();
-
-        //            // BLOG : Why use .Sender instead of .From.Add ???? In ContactPRO one use could send emails to other users...so perhaps this is more appropriate for that scenario??? In BlogProject, all emails will come from the same email address, so .From.Add might be more appropriate???
-        //            //newEmail.Sender = MailboxAddress.Parse(emailSender);
-        //            newEmail.From.Add(MailboxAddress.Parse(emailSender));
-
-        //            // BLOG : in ContactPro a for loop is used here because an email could be sent to a group consisting of multiple emails. Is this a feature that could be useful in the BlogProject???
-        //            //foreach (var emailAddress in email.Split(";"))
-        //            //{
-        //            //    newEmail.To.Add(MailboxAddress.Parse(emailAddress));
-        //            //}
-
-        //            newEmail.To.Add(MailboxAddress.Parse(email));
-        //            newEmail.Subject = subject;
-
-        //            BodyBuilder emailBody = new();
-        //            emailBody.HtmlBody = htmlMessage;
-
-        //            newEmail.Body = emailBody.ToMessageBody();
-
-        //            // Log into smtp client
-        //            using SmtpClient smtpClient = new();
-
-        //            try
-        //            {
-        //                var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
-        //                var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
-        //                var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
-
-        //                await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-        //                await smtpClient.AuthenticateAsync(emailSender, password);
-
-        //                await smtpClient.SendAsync(newEmail);
-        //                await smtpClient.DisconnectAsync(true);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                var error = ex.Message;
-        //                throw;
-        //            }
-        //        }
-        //    }
-        //}
 
 
         // ***** WORKING COPY ***** //
@@ -137,21 +76,21 @@ namespace BlogProject.Services
             /*** Validate the email address ***/
             if (string.IsNullOrWhiteSpace(emailTo) || !MailboxAddress.TryParse(emailTo, out var mailbox))
             {
-                throw new ArgumentException("A valid From email is required.", nameof(emailTo));
+                throw new ArgumentException("A valid email is required.", nameof(emailTo));
             }
 
             /*** Load SMTP settings from environment variables ***/
             var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
             var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
             int port;
-                if (_mailSettings.MailPort != 0)
-                {
-                    port = _mailSettings.MailPort;
-                }
-                else
-                {
-                    port = int.Parse(Environment.GetEnvironmentVariable("MailPort"));
-                }
+            if (_mailSettings.MailPort != 0)
+            {
+                port = _mailSettings.MailPort;
+            }
+            else
+            {
+                port = int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+            }
 
             var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
 
@@ -206,6 +145,59 @@ namespace BlogProject.Services
         }
     }
 }
+
+
+//        //// **** Refactored to mirror ContactPro EmailService **** ////
+//        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+//        {
+//            // Use null coalescing operator to instruct email sender to get the local value, but if null will get the right hand side value from Railway
+//            var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
+
+//            MimeMessage newEmail = new();
+
+//            // BLOG : Why use .Sender instead of .From.Add ???? In ContactPRO one use could send emails to other users...so perhaps this is more appropriate for that scenario??? In BlogProject, all emails will come from the same email address, so .From.Add might be more appropriate???
+//            //newEmail.Sender = MailboxAddress.Parse(emailSender);
+//            newEmail.From.Add(MailboxAddress.Parse(emailSender));
+
+//            // BLOG : in ContactPro a for loop is used here because an email could be sent to a group consisting of multiple emails. Is this a feature that could be useful in the BlogProject???
+//            //foreach (var emailAddress in email.Split(";"))
+//            //{
+//            //    newEmail.To.Add(MailboxAddress.Parse(emailAddress));
+//            //}
+
+//            newEmail.To.Add(MailboxAddress.Parse(email));
+//            newEmail.Subject = subject;
+
+//            BodyBuilder emailBody = new();
+//            emailBody.HtmlBody = htmlMessage;
+
+//            newEmail.Body = emailBody.ToMessageBody();
+
+//            // Log into smtp client
+//            using SmtpClient smtpClient = new();
+
+//            try
+//            {
+//                var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
+//                var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+//                var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
+
+//                await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+//                await smtpClient.AuthenticateAsync(emailSender, password);
+
+//                await smtpClient.SendAsync(newEmail);
+//                await smtpClient.DisconnectAsync(true);
+//            }
+//            catch (Exception ex)
+//            {
+//                var error = ex.Message;
+//                throw;
+//            }
+//        }
+//    }
+//}
+
+
 
 
 //        // **** ORIGINAL MAIN BRANCH VERSION BELOW: *******
