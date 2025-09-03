@@ -42,7 +42,16 @@ namespace BlogProject.Services
                 try
                 {
                     var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
-                    var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+                    int port;
+                    if (_mailSettings.MailPort != 0)
+                    {
+                        port = _mailSettings.MailPort;
+                    }
+                    else
+                    {
+                        port = int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+                    }
+
                     var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
 
                     await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
@@ -134,7 +143,16 @@ namespace BlogProject.Services
             /*** Load SMTP settings from environment variables ***/
             var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
             var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
-            var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+            int port;
+                if (_mailSettings.MailPort != 0)
+                {
+                    port = _mailSettings.MailPort;
+                }
+                else
+                {
+                    port = int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+                }
+
             var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
 
             //***Create the email ***
@@ -162,13 +180,18 @@ namespace BlogProject.Services
                 await smtp.SendAsync(newEmail);
             }
             /***CATCH and log any errors ***/
-            catch (Exception ex)
+            catch (TimeoutException ex)
             {
                 //LOG TIMEOUT EXCEPTIONS SPECIFICALLY
+                Console.Error.WriteLine($"Email send timed out: {ex.Message}");
+                return;
+            }
+            catch (Exception ex)
+            {
                 //LOG ANY OTHER ERRORS
-                
-                var error = ex.Message;
-                throw;
+                Console.Error.WriteLine($"Error sending email: {ex.Message}");
+                return;
+
             }
             //*** FINALLY, DISCONNECT ***
             finally
