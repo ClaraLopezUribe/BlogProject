@@ -71,101 +71,88 @@ namespace BlogProject.Services
 
 
 
-        ////// **** Refactored to mirror ContactPro EmailService **** ////
-        //public async Task SendEmailAsync(string email, string subject, string htmlMessage)
-        //{
-        //    // Use null coalescing operator to instruct email sender to get the local value, but if null will get the right hand side value // LEARN : Why check local value first and not the Environment value???
-        //    var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
+        //        //// **** Refactored to mirror ContactPro EmailService **** ////
+        //        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        //        {
+        //            // Use null coalescing operator to instruct email sender to get the local value, but if null will get the right hand side value from Railway
+        //            var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
 
-            
+        //            MimeMessage newEmail = new();
 
-        //    MimeMessage newEmail = new();
+        //            // BLOG : Why use .Sender instead of .From.Add ???? In ContactPRO one use could send emails to other users...so perhaps this is more appropriate for that scenario??? In BlogProject, all emails will come from the same email address, so .From.Add might be more appropriate???
+        //            //newEmail.Sender = MailboxAddress.Parse(emailSender);
+        //            newEmail.From.Add(MailboxAddress.Parse(emailSender));
 
-        //    // LEARN : Why use .Sender instead of .From ???? In ContactPRO one use could send emails to other users...so perhaps this is more appropriate for that scenario??? In BlogProject, all emails will come from the same email address. so .From might be more appropriate???
-        //    //newEmail.Sender = MailboxAddress.Parse(emailSender);
-        //    newEmail.From.Add(MailboxAddress.Parse(emailSender));
+        //            // BLOG : in ContactPro a for loop is used here because an email could be sent to a group consisting of multiple emails. Is this a feature that could be useful in the BlogProject???
+        //            //foreach (var emailAddress in email.Split(";"))
+        //            //{
+        //            //    newEmail.To.Add(MailboxAddress.Parse(emailAddress));
+        //            //}
 
-        //    // LEARN : was this loop in ContactPro because an email could be sent to a group consisting of multiple emails? is this a feature that could be needed in the BlogProject? If not delete.
-        //    //foreach (var emailAddress in email.Split(";"))
-        //    //{
-        //    //    newEmail.To.Add(MailboxAddress.Parse(emailAddress));
-        //    //}
+        //            newEmail.To.Add(MailboxAddress.Parse(email));
+        //            newEmail.Subject = subject;
 
-        //    newEmail.To.Add(MailboxAddress.Parse(email));
-        //    newEmail.Subject = subject;
+        //            BodyBuilder emailBody = new();
+        //            emailBody.HtmlBody = htmlMessage;
 
-        //    BodyBuilder emailBody = new();
-        //    emailBody.HtmlBody = htmlMessage;
+        //            newEmail.Body = emailBody.ToMessageBody();
 
-        //    newEmail.Body = emailBody.ToMessageBody();
+        //            // Log into smtp client
+        //            using SmtpClient smtpClient = new();
 
-        //    // Log into smtp client
-        //    using SmtpClient smtpClient = new();
+        //            try
+        //            {
+        //                var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
+        //                var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+        //                var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
 
-        //    try
-        //    {
-        //        var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
-        //        var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
-        //        var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
+        //                await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+        //                await smtpClient.AuthenticateAsync(emailSender, password);
 
-        //        await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-        //        await smtpClient.AuthenticateAsync(emailSender, password);
-
-        //        await smtpClient.SendAsync(newEmail);
-        //        await smtpClient.DisconnectAsync(true);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var error = ex.Message;
-        //        throw;
+        //                await smtpClient.SendAsync(newEmail);
+        //                await smtpClient.DisconnectAsync(true);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                var error = ex.Message;
+        //                throw;
+        //            }
+        //        }
         //    }
         //}
 
 
-
-        //public async Task SendEmailAsync(string email, string subject, string htmlMessage)
-        //{
-        //    var newEmail = new MimeMessage();
-        //    newEmail.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
-        //    newEmail.To.Add(MailboxAddress.Parse(email));
-        //    newEmail.Subject = subject;
-
-        //    var builder = new BodyBuilder();
-        //    builder.HtmlBody = htmlMessage;
-
-        //    newEmail.Body = builder.ToMessageBody();
-
-        //    using var smtp = new SmtpClient();
-        //    smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
-        //    smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
-
-        //    await smtp.SendAsync(newEmail);
-
-        //    smtp.Disconnect(true);
-
-        //    // Optional: Add code to allow attachments to be included
-
-        //}
-
-
-        // Revert to Main branch version:
+        // **** WORKING COPY **** //
         public async Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
         {
-            var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            email.To.Add(MailboxAddress.Parse(emailTo));
-            email.Subject = subject;
+            if (string.IsNullOrWhiteSpace(emailTo) || !MailboxAddress.TryParse(emailTo, out var mailbox))
+            {
+                throw new ArgumentException("A valid From email is required.", nameof(emailTo));
+            }
 
-            var builder = new BodyBuilder();
-            builder.HtmlBody = htmlMessage;
+            var emailSender = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
 
-            email.Body = builder.ToMessageBody();
+            MimeMessage newEmail = new();
+            newEmail.From.Add(MailboxAddress.Parse(emailSender));
+            newEmail.To.Add(MailboxAddress.Parse(emailTo));
+            newEmail.Subject = subject;
 
-            using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
+            BodyBuilder emailBody = new();
+            emailBody.HtmlBody = htmlMessage;
 
-            await smtp.SendAsync(email);
+            newEmail.Body = emailBody.ToMessageBody();
+
+            // Log into smtp client
+            using SmtpClient smtp = new();
+
+            var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
+            var port = _mailSettings.MailPort != 0 ? _mailSettings.MailPort : int.Parse(Environment.GetEnvironmentVariable("MailPort"));
+            var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
+
+            smtp.Connect(host, port, SecureSocketOptions.StartTls);
+            smtp.Authenticate(emailSender, password);
+
+            await smtp.SendAsync(newEmail);
 
             smtp.Disconnect(true);
 
@@ -174,3 +161,31 @@ namespace BlogProject.Services
         }
     }
 }
+
+
+//        // **** ORIGINAL MAIN BRANCH VERSION BELOW: *******
+//        public async Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
+//        {
+//            var email = new MimeMessage();
+//            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+//            email.To.Add(MailboxAddress.Parse(emailTo));
+//            email.Subject = subject;
+
+//            var builder = new BodyBuilder();
+//            builder.HtmlBody = htmlMessage;
+
+//            email.Body = builder.ToMessageBody();
+
+//            using var smtp = new SmtpClient();
+//            smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, SecureSocketOptions.StartTls);
+//            smtp.Authenticate(_mailSettings.Mail, _mailSettings.MailPassword);
+
+//            await smtp.SendAsync(email);
+
+//            smtp.Disconnect(true);
+
+//            // Optional: Add code to allow attachments to be included
+
+//        }
+//    }
+//}
