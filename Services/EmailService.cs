@@ -4,73 +4,55 @@ using MailKit.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using MimeKit;
 using RestSharp;
 using RestSharp.Authenticators;
 
 namespace BlogProject.Services
 {
-    public class EmailService : IBlogEmailSender
+    public class EmailService
     {
         private readonly MailSettings _mailSettings;
         private readonly IConfiguration _configuration;
-        private readonly IEmailSender _emailSender;
 
         public EmailService(IOptions<MailSettings> mailSettings, IConfiguration configuration, IEmailSender emailSender)
         {
             _mailSettings = mailSettings.Value;
             _configuration = configuration;
-            _emailSender = emailSender;
         }
-        public async Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
+
+        //***** Mailgun Email API ***** //
+        public async Task<RestResponse> SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
         {
             var myEmail = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
-            if (string.IsNullOrWhiteSpace(emailFrom) || !MailboxAddress.TryParse(emailFrom, out var mailbox))
+
+            /*** Validate the email address ***/
+            if (string.IsNullOrWhiteSpace(emailFrom))
             {
-                throw new ArgumentException("A valid From email is required.", nameof(emailFrom));
+                throw new ArgumentException("A valid email is required.", nameof(emailFrom));
             }
-            else
+
+            //Get the API value from environment variable configuration
+            var emailAPI = _configuration.GetSection("MailgunSettings")["EMAIL_API"] ?? Environment.GetEnvironmentVariable("EMAIL_API");
+
+            if (string.IsNullOrWhiteSpace(emailAPI))
             {
-                var email = new MimeMessage();
-                email.From.Add(MailboxAddress.Parse(emailFrom));
-                email.To.Add(MailboxAddress.Parse(myEmail));
-                email.Subject = subject;
-
-                var builder = new BodyBuilder();
-                builder.HtmlBody = $"<b>{name}</b> has sent you an email and can be reached at: <b>{emailFrom}</b><br/><br/>{htmlMessage}";
-
-                email.Body = builder.ToMessageBody();
-
-                // Log into smtp client
-                using SmtpClient smtpClient = new();
-
-                try
-                {
-                    var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
-                    int port;
-                    if (_mailSettings.MailPort != 0)
-                    {
-                        port = _mailSettings.MailPort;
-                    }
-                    else
-                    {
-                        port = int.Parse(Environment.GetEnvironmentVariable("MailPort")!);
-                    }
-
-                    var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
-
-                    await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-                    await smtpClient.AuthenticateAsync(myEmail, password);
-
-                    await smtpClient.SendAsync(email);
-                    await smtpClient.DisconnectAsync(true);
-                }
-                catch (Exception ex)
-                {
-                    var error = ex.Message;
-                    throw;
-                }
+                throw new ArgumentException("A valid email API is required.", nameof(emailAPI));
             }
+
+            var options = new RestClientOptions("https://api.mailgun.net")
+            { Authenticator = new HttpBasicAuthenticator("api", emailAPI) };
+
+            var client = new RestClient(options);
+            var request = new RestRequest("/v3/codelifeuploaded.com/messages", Method.Post);
+            request.AlwaysMultipartFormData = true;
+            request.AddParameter("from", emailFrom );
+            request.AddParameter("to", myEmail);
+            request.AddParameter("subject", subject);
+            request.AddParameter("html", htmlMessage);
+
+            return await client.ExecuteAsync(request);
         }
 
         //***** Mailgun Email API***** //
@@ -104,11 +86,6 @@ namespace BlogProject.Services
 
 
             return await client.ExecuteAsync(request);
-        }
-
-        Task IEmailSender.SendEmailAsync(string email, string subject, string htmlMessage)
-        {
-            return SendEmailAsync(email, subject, htmlMessage);
         }
     }
 }
