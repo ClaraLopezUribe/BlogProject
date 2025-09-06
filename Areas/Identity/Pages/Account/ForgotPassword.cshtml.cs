@@ -17,12 +17,12 @@ namespace BlogProject.Areas.Identity.Pages.Account
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<BlogUser> _userManager;
-        private readonly IBlogEmailSender _emailSender;
+        private readonly EmailService _emailService;
 
-        public ForgotPasswordModel(UserManager<BlogUser> userManager, IBlogEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<BlogUser> userManager, EmailService emailService)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
+                await _emailService.SendEmailAsync(
                     Input.Email,
                     "Reset Password",
                     $"Please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>reset your password by clicking here</a>.");

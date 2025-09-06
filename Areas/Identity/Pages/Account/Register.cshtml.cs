@@ -22,7 +22,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
         private readonly IUserStore<BlogUser> _userStore;
         private readonly IUserEmailStore<BlogUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IBlogEmailSender _emailSender;
+        private readonly EmailService _emailService;
         private readonly IImageService _imageService;
         private readonly IConfiguration _configruation;
 
@@ -31,7 +31,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
             IUserStore<BlogUser> userStore,
             SignInManager<BlogUser> signInManager,
             ILogger<RegisterModel> logger,
-            IBlogEmailSender emailSender,
+            EmailService emailService,
             IImageService imageService,
             IConfiguration configruation)
         {
@@ -40,7 +40,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _emailService = emailService;
             _imageService = imageService;
             _configruation = configruation;
         }
@@ -164,7 +164,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId, code, returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    await _emailService.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)

@@ -16,7 +16,7 @@ namespace BlogProject.Services
         private readonly MailSettings _mailSettings;
         private readonly IConfiguration _configuration;
 
-        public EmailService(IOptions<MailSettings> mailSettings, IConfiguration configuration, IEmailSender emailSender)
+        public EmailService(IOptions<MailSettings> mailSettings, IConfiguration configuration)
         {
             _mailSettings = mailSettings.Value;
             _configuration = configuration;
@@ -83,7 +83,6 @@ namespace BlogProject.Services
             request.AddParameter("to", emailTo);
             request.AddParameter("subject", subject);
             request.AddParameter("html", htmlMessage);
-
 
             return await client.ExecuteAsync(request);
         }

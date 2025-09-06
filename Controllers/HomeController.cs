@@ -11,16 +11,13 @@ namespace BlogProject.Controllers
 {
     public class HomeController : Controller
     {
-        // TODO : Implement ILogger for POST actions, or Delete
-        private readonly ILogger<HomeController> _logger;
-        private readonly IBlogEmailSender _emailSender;
+        // TODO : Implement ILogger for POST actions???
         private readonly ApplicationDbContext _context;
-        public HomeController(ILogger<HomeController> logger, IBlogEmailSender emailSender, ApplicationDbContext context)
+        private readonly EmailService _emailService;
+        public HomeController(ApplicationDbContext context, EmailService emailService)
         {
-            _logger = logger;
-            _emailSender = emailSender;
             _context = context;
-
+            _emailService = emailService;
         }
 
         public async Task<IActionResult> Index(int? page)
@@ -82,12 +79,10 @@ namespace BlogProject.Controllers
         {
             // Incorporate the information entered by the user to the model, then leverage the email sender service to send the email
             model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
-            await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
+            await _emailService.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
             // TODO : if successfully sent, display confirmation message that email was sent
             return RedirectToAction("Index");
-
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

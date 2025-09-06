@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using BlogProject.Services;
 
 namespace BlogProject.Areas.Identity.Pages.Account
 {
@@ -28,7 +29,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
         private readonly UserManager<BlogUser> _userManager;
         private readonly IUserStore<BlogUser> _userStore;
         private readonly IUserEmailStore<BlogUser> _emailStore;
-        private readonly IEmailSender _emailSender;
+        private readonly EmailService _emailService;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
@@ -36,14 +37,14 @@ namespace BlogProject.Areas.Identity.Pages.Account
             UserManager<BlogUser> userManager,
             IUserStore<BlogUser> userStore,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            EmailService emailService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _logger = logger;
-            _emailSender = emailSender;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -174,7 +175,7 @@ namespace BlogProject.Areas.Identity.Pages.Account
                             values: new { area = "Identity", userId = userId, code = code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        await _emailService.SendEmailAsync(Input.Email, "Confirm your email",
                             $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
