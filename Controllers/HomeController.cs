@@ -11,7 +11,7 @@ namespace BlogProject.Controllers
 {
     public class HomeController : Controller
     {
-        // LEARN : What is ILogger for?? it isn't used in this controller...delete?
+        // TODO : Implement ILogger for POST actions, or Delete
         private readonly ILogger<HomeController> _logger;
         private readonly IBlogEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
@@ -20,7 +20,7 @@ namespace BlogProject.Controllers
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
-            
+
         }
 
         public async Task<IActionResult> Index(int? page)
@@ -28,7 +28,7 @@ namespace BlogProject.Controllers
             var pageNumber = page ?? 1;
             var pageSize = 3;
 
-            
+
             var blogs = await _context.Blogs
                 //TODO : Uncomment the following line to only show blogs with posts that are production ready
                 /*.Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady))*/ /*Wrap in if statement to allow admins to see all blogs regardless of ready status*/
@@ -36,21 +36,15 @@ namespace BlogProject.Controllers
                 .Include(b => b.Posts)
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
-            
+
             var posts = blogs.FirstOrDefault()?.Posts;
 
-            if (ViewData["HeaderImage"] == null)
-            {
-               ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
-            }
-           
-            
-            //ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
+            ViewData["HeaderImage"] = @Url.Content("~/assets/img/home-bg.jpg");
             ViewData["Title"] = "Home";
             ViewData["MainText"] = "Clara-FYIng Thoughts";
             ViewData["Subtext"] = "A Collection of Blogs About Code, Careers, and Creativity";
-            
-            return View(blogs); 
+
+            return View(blogs);
         }
 
         public IActionResult About()
@@ -63,8 +57,6 @@ namespace BlogProject.Controllers
             ViewData["Title"] = "About";
             ViewData["MainText"] = "About Me";
             ViewData["Subtext"] = "My Journey. My Story.";
-
-
 
             return View();
         }
@@ -84,17 +76,17 @@ namespace BlogProject.Controllers
         }
 
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Contact(ContactMe model)
-        //{
-        //    // Incorporate the information entered by the user to the model, then leverage the email sender service to send the email
-        //    model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
-        //    await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
-        //    // TODO : if successfully sent, display confirmation message that email was sent
-        //    return RedirectToAction("Index");
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Contact(ContactMe model)
+        {
+            // Incorporate the information entered by the user to the model, then leverage the email sender service to send the email
+            model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
+            await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
+            // TODO : if successfully sent, display confirmation message that email was sent
+            return RedirectToAction("Index");
 
-        //}
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

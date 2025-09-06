@@ -1,6 +1,7 @@
 ﻿using BlogProject.View_Models;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -9,14 +10,13 @@ using RestSharp.Authenticators;
 
 namespace BlogProject.Services
 {
-    public class EmailService
+    public class EmailService : IBlogEmailSender
     {
         private readonly MailSettings _mailSettings;
         private readonly IConfiguration _configuration;
-        private readonly IBlogEmailSender _emailSender;
+        private readonly IEmailSender _emailSender;
 
-
-        public EmailService(IOptions<MailSettings> mailSettings, IConfiguration configuration, IBlogEmailSender emailSender)
+        public EmailService(IOptions<MailSettings> mailSettings, IConfiguration configuration, IEmailSender emailSender)
         {
             _mailSettings = mailSettings.Value;
             _configuration = configuration;
@@ -104,6 +104,11 @@ namespace BlogProject.Services
 
 
             return await client.ExecuteAsync(request);
+        }
+
+        Task IEmailSender.SendEmailAsync(string email, string subject, string htmlMessage)
+        {
+            return SendEmailAsync(email, subject, htmlMessage);
         }
     }
 }
