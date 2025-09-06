@@ -4,6 +4,7 @@ using BlogProject.Models;
 using BlogProject.Services;
 using BlogProject.View_Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 
@@ -35,7 +36,7 @@ builder.Services.AddScoped<BlogSearchService>();
 builder.Services.AddScoped<DataService>();
 
 // Register preconfigured instance of MailSettings and EmailService
-builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<EmailService>(); 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 

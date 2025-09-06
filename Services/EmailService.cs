@@ -1,6 +1,7 @@
 ﻿using BlogProject.View_Models;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using RestSharp;
@@ -12,68 +13,70 @@ namespace BlogProject.Services
     {
         private readonly MailSettings _mailSettings;
         private readonly IConfiguration _configuration;
+        private readonly IBlogEmailSender _emailSender;
 
-        public EmailService(IOptions<MailSettings> mailSettings, IConfiguration configuration)
+
+        public EmailService(IOptions<MailSettings> mailSettings, IConfiguration configuration, IBlogEmailSender emailSender)
         {
             _mailSettings = mailSettings.Value;
             _configuration = configuration;
+            _emailSender = emailSender;
         }
-        //public async Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
-        //{
-        //    var myEmail = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
-        //    if (string.IsNullOrWhiteSpace(emailFrom) || !MailboxAddress.TryParse(emailFrom, out var mailbox))
-        //    {
-        //        throw new ArgumentException("A valid From email is required.", nameof(emailFrom));
-        //    }
-        //    else
-        //    {
-        //        var email = new MimeMessage();
-        //        email.From.Add(MailboxAddress.Parse(emailFrom));
-        //        email.To.Add(MailboxAddress.Parse(myEmail));
-        //        email.Subject = subject;
+        public async Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
+        {
+            var myEmail = _mailSettings.Mail ?? Environment.GetEnvironmentVariable("Mail");
+            if (string.IsNullOrWhiteSpace(emailFrom) || !MailboxAddress.TryParse(emailFrom, out var mailbox))
+            {
+                throw new ArgumentException("A valid From email is required.", nameof(emailFrom));
+            }
+            else
+            {
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse(emailFrom));
+                email.To.Add(MailboxAddress.Parse(myEmail));
+                email.Subject = subject;
 
-        //        var builder = new BodyBuilder();
-        //        builder.HtmlBody = $"<b>{name}</b> has sent you an email and can be reached at: <b>{emailFrom}</b><br/><br/>{htmlMessage}";
+                var builder = new BodyBuilder();
+                builder.HtmlBody = $"<b>{name}</b> has sent you an email and can be reached at: <b>{emailFrom}</b><br/><br/>{htmlMessage}";
 
-        //        email.Body = builder.ToMessageBody();
+                email.Body = builder.ToMessageBody();
 
-        //        // Log into smtp client
-        //        using SmtpClient smtpClient = new();
+                // Log into smtp client
+                using SmtpClient smtpClient = new();
 
-        //        try
-        //        {
-        //            var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
-        //            int port;
-        //            if (_mailSettings.MailPort != 0)
-        //            {
-        //                port = _mailSettings.MailPort;
-        //            }
-        //            else
-        //            {
-        //                port = int.Parse(Environment.GetEnvironmentVariable("MailPort"));
-        //            }
+                try
+                {
+                    var host = _mailSettings.MailHost ?? Environment.GetEnvironmentVariable("MailHost");
+                    int port;
+                    if (_mailSettings.MailPort != 0)
+                    {
+                        port = _mailSettings.MailPort;
+                    }
+                    else
+                    {
+                        port = int.Parse(Environment.GetEnvironmentVariable("MailPort")!);
+                    }
 
-        //            var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
+                    var password = _mailSettings.MailPassword ?? Environment.GetEnvironmentVariable("MailPassword");
 
-        //            await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-        //            await smtpClient.AuthenticateAsync(myEmail, password);
+                    await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+                    await smtpClient.AuthenticateAsync(myEmail, password);
 
-        //            await smtpClient.SendAsync(email);
-        //            await smtpClient.DisconnectAsync(true);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            var error = ex.Message;
-        //            throw;
-        //        }
-        //    }
+                    await smtpClient.SendAsync(email);
+                    await smtpClient.DisconnectAsync(true);
+                }
+                catch (Exception ex)
+                {
+                    var error = ex.Message;
+                    throw;
+                }
+            }
+        }
 
-
-        //}
-
-        // ***** Mailgun Email API ***** //
+        //***** Mailgun Email API***** //
         public async Task<RestResponse> SendEmailAsync(string emailTo, string subject, string htmlMessage)
         {
+
             /*** Validate the email address ***/
             if (string.IsNullOrWhiteSpace(emailTo))
             {
@@ -98,6 +101,7 @@ namespace BlogProject.Services
             request.AddParameter("to", emailTo);
             request.AddParameter("subject", subject);
             request.AddParameter("html", htmlMessage);
+
 
             return await client.ExecuteAsync(request);
         }
