@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
@@ -36,7 +35,7 @@ builder.Services.AddScoped<BlogSearchService>();
 builder.Services.AddScoped<DataService>();
 
 // Register preconfigured instance of MailSettings and EmailService
-builder.Services.AddScoped<IBlogEmailSender, EmailService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 
@@ -84,7 +83,8 @@ else
 
 app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
 
-// BLOG : Commented out the HTTPS redirection because Railway handles HTTPS redirections externally and I thought that following line was causing conflicts that caused errors to Identity pages (like Forgot Password, Register, etc.) However that might not be the case. I will need to test this again later.
+// BLOG : Commented out the HTTPS redirection because Railway handles HTTPS redirections externally, and the UseHttpRedirection was causing errors on Railway deployment. This is likely because I am using a custom domain with Railway, and Railway provides its own SSL termination.
+// TODO : Shoud I put this in the if (app.Environment.IsDevelopment()) block above?
 //app.UseHttpsRedirection();
 
 app.UseStaticFiles();
