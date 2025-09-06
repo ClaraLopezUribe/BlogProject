@@ -36,7 +36,8 @@ builder.Services.AddScoped<BlogSearchService>();
 builder.Services.AddScoped<DataService>();
 
 // Register preconfigured instance of MailSettings and EmailService
-builder.Services.AddScoped<EmailService>(); 
+builder.Services.AddScoped<EmailService>();
+//builder.Services.AddScoped<IBlogEmailSender, EmailService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 
