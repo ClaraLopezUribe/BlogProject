@@ -21,16 +21,16 @@ namespace BlogProject.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<BlogUser> _userManager;
         private readonly SignInManager<BlogUser> _signInManager;
-        private readonly IBlogEmailSender _emailSender;
+        private readonly EmailService _emailService;
 
         public EmailModel(
-            UserManager<BlogUser> userManager,
+            UserManager<BlogUser> userManager,  
             SignInManager<BlogUser> signInManager,
-            IBlogEmailSender emailSender)
+            EmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender = emailSender;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace BlogProject.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
+                await _emailService.SendEmailAsync(
                     Input.NewEmail,
                     "Confirm your email",
                     $"Please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>confirm your account by clicking here</a>.");
@@ -161,7 +161,7 @@ namespace BlogProject.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
+            await _emailService.SendEmailAsync(
                 email,
                 "Confirm your email",
                 $"Please <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>confirm your account by clicking here</a>.");

@@ -1,4 +1,4 @@
-﻿// This file if for reference only. Implementation is handled in the DataService class.
+﻿//// LEARN : Isnt this file redundant??? It looks to me that the implementation is handled in the DataService class.
 
 
 //using BlogProject.Data;

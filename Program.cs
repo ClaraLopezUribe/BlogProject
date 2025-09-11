@@ -4,9 +4,9 @@ using BlogProject.Models;
 using BlogProject.Services;
 using BlogProject.View_Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,36 +30,41 @@ builder.Services.AddRazorPages();
 
 
 // Register Custom Services
-builder.Services.AddScoped<DataService>();
-builder.Services.AddScoped<BlogSearchService>();
-
-// Register preconfigured instance of MailSettings
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-builder.Services.AddScoped<IBlogEmailSender, EmailService>();
-
-// Register Custom Interface Services
 builder.Services.AddScoped<IImageService, BasicImageService>();
-
 builder.Services.AddScoped<ISlugService, BasicSlugService>();
+builder.Services.AddScoped<BlogSearchService>();
+builder.Services.AddScoped<DataService>();
 
+// Register preconfigured instance of MailSettings and EmailService
+builder.Services.AddScoped<EmailService>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 var app = builder.Build();
+var scope = app.Services.CreateScope();
 
-//// REFERENCE SECTION: This section is for reference only implementation handled starting with the dataService variable
-//using (var scope = app.Services.CreateScope()) {
-//    var services = scope.ServiceProvider;
-//    var context = services.GetRequiredService<ApplicationDbContext>();
+//await DataHelper.ManageDataAsync(scope.ServiceProvider);
 
-//    // Apply any pending migrations and create the database if it doesn't exist
-//    await context.Database.MigrateAsync();
 
-//    // Run additional data management tasks
-//    await DataHelper.ManageDataAsync(scope.ServiceProvider);
-//}
+//// LEARN : Explain this code. Some of it seems to be redundant from DataHelper.cs
+/// TODO : DELETE this section
+////using (var scope = app.Services.CreateScope())
+////{
+////    var services = scope.ServiceProvider;
+////    var context = services.GetRequiredService<ApplicationDbContext>();
 
+////    // Apply any pending migrations and create the database if it doesn't exist
+////    await context.Database.MigrateAsync();
+
+////    // Run additional data management tasks
+////    await DataHelper.ManageDataAsync(scope.ServiceProvider);
+////}
+
+var dataService = scope.ServiceProvider.GetRequiredService<DataService>();
+//// COMMIT 26327f4 : Jan 2, 2025
 // Get access to registered DataService
-var dataService = app.Services.CreateScope()
-                     .ServiceProvider.GetRequiredService<DataService>();
+//var dataService = app.Services.CreateScope()
+//                     .ServiceProvider.GetRequiredService<DataService>();
+
 // Run initialization ManageDataAsync()
 await dataService.ManageDataAsync();
 
@@ -76,9 +81,11 @@ else
     app.UseHsts();
 }
 
-// BLOG : Commented out the HTTPS redirection because Railway handles HTTPS redirections externally and I thought that following line was causing conflicts that caused errors to Identity pages (like Forgot Password, Register, etc.) However that might not be the case. I will need to test this again later.
-app.UseHttpsRedirection();
+app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
 
+// BLOG : Commented out the HTTPS redirection because Railway handles HTTPS redirections externally, and the UseHttpRedirection was causing errors on Railway deployment. This is likely because I am using a custom domain with Railway, and Railway provides its own SSL termination.
+// TODO : Shoud I put this in the if (app.Environment.IsDevelopment()) block above?
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
@@ -92,7 +99,6 @@ app.MapControllerRoute(
     name: "SlugRoute",
     pattern: "BlogPosts/UrlFriendly/{slug}",
     defaults: new { controller = "Posts", action = "Details" });
-
 
 app.MapControllerRoute(
     name: "default",

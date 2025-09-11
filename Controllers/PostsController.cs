@@ -125,7 +125,7 @@ namespace BlogProject.Controllers
             if (string.IsNullOrEmpty(slug)) return NotFound();
 
             var post = await _context.Posts
-                //.Include(p => p.Blog)
+                .Include(p => p.Blog)
                 .Include(p => p.BlogUser) // This BlogUser is the Author of the Post
                 .Include(p => p.Tags)
                 .Include(p => p.Comments)
