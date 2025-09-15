@@ -22,7 +22,7 @@ namespace BlogProject.Controllers
 
         // GET: Comments
 
-        //// UNCOMMENT this section if Scaffolded Index for MOD and/or ADMIN use is required; if this functionality is needed, add appropriate link in the Shared _Layout View
+        //// ENHANCEMENT : UNCOMMENT this section if Scaffolded Index for MOD and/or ADMIN use is required; if this functionality is needed, add appropriate link in the Shared _Layout View
         //public async Task<IActionResult> Index()
         //{
         //    var applicationDbContext = _context.Comments.Include(c => c.BlogUser).Include(c => c.Moderator).Include(c => c.Post);
