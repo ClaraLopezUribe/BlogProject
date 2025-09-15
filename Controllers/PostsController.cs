@@ -65,11 +65,13 @@ namespace BlogProject.Controllers
         }
 
         // GET: Posts/Index
-        public async Task<IActionResult> Index() // Index of ALL Posts of all Blogs
-        {
-            var applicationDbContext = _context.Posts.Include(p => p.Blog).Include(p => p.BlogUser);
-            return View(await applicationDbContext.ToListAsync());
-        }
+
+        //// TODO : Restrict access to Admins only using [Authorize(Roles = "Admin")]. Uncomment this Task when related view is ready
+        //public async Task<IActionResult> Index() // Index of ALL Posts of all Blogs.  
+        //{
+        //    var applicationDbContext = _context.Posts.Include(p => p.Blog).Include(p => p.BlogUser);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
 
         //GET: Posts/BlogPostIndex
 
@@ -85,9 +87,8 @@ namespace BlogProject.Controllers
             var pageSize = 6;
 
             var posts = await _context.Posts
-                .Include(p => p.Blog)
-                // Only include posts for the selected blog
-                .Where(p => p.BlogId == id) 
+                .Include(p => p.Blog)                
+                .Where(p => p.BlogId == id) // Only include posts for the selected blog
                 .OrderByDescending(p => p.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
