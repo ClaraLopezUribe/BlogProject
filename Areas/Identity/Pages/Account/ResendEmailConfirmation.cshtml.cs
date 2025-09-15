@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using BlogProject.Services;
 
+//// BLOG : Keeping this file for reference to document the experience transitioning to Mailgun Email API
+
+
 namespace BlogProject.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
