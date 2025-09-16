@@ -8,9 +8,9 @@
 @using Microsoft.AspNetCore.Identity
 @using BlogProject.Areas.Identity
 @using BlogProject.Models
+@using BlogProject.View_Models
 @using BlogProject.Enums
 @using BlogProject.Services
-@using BlogProject.View_Models
 @using X.PagedList.Extensions
 @using X.PagedList.EF
 
@@ -47,13 +47,14 @@
 </article> 
 
 <hr />
-
+<!-- POST COMMENTS -->
 <div>
     @if (User.Identity.IsAuthenticated)
     {
         <form asp-action="Create" asp-controller="Comments" method="post">
             @Html.Hidden("PostId", Model.Post.Id)
             @Html.Hidden("Slug", Model.Post.Slug)
+ @* Add hidden html to pass bloguserid to comments controller??       *@ 
 
             <div class="form-group">
                 <label class="h2 control-label font-weight-bold">Add Comment</label>
@@ -75,15 +76,14 @@
     <br />
 
     @{
-        /* REFERENCE : Insert count of x in html text  */
+        /* REFERENCE : How to insert count of x in html text  */
     }
     <!-- COMMENT CARDS SECTION -->
     <div id="commentSection" class="d-block text-bg-dark text-center p-2">@Model.Post.Comments.Count COMMENT(S)</div>
 
     <!--Create dynamic id attributes for modals
 
-    //Model declared on page is IEnumberable<T>
-    //Any collection can use this technique -->
+    // REFERENCE : a Model declared on page is IEnumberable<T> . Any collection can use this technique --> 
     @foreach (var comment in Model.Post.Comments.OrderByDescending(c => c.Created))
     {
         <div class="card-group p-2">
@@ -134,6 +134,7 @@
                         {
                             return;
                         }
+                        /* TODO : Review design choice here, and delete if this option is not needed */
                         @* else if (comment.Deleted is not null)
                     {
                         <p>This comment was deleted for <span class="text-bg-danger">EGREGIOUS @comment.ModerationType.ToString().ToUpper()</span></p>
@@ -268,3 +269,4 @@
     }
 
 </div>
+
