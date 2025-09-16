@@ -25,8 +25,10 @@ namespace BlogProject.Controllers
             _imageService = imageService;
             _userManager = userManager;
         }
-        /* TODO : Delete list of Blogs Index View and correspondeing IActionResult if not needed */
-        // GET: Blogs/Index List (Not the Landing Page)
+
+        // GET: Blogs/Index List of all blogs (Not the Landing Page)
+
+        //// ENHANCEMENT : Restrict to Admins only with [Authorize(Roles = "Admin")]. Uncomment this Task when the View is ready.
         //public async Task<IActionResult> Index()
         //{
         //    var applicationDbContext = _context.Blogs.Include(b => b.BlogUser);
@@ -53,6 +55,8 @@ namespace BlogProject.Controllers
         }
 
         // GET: Blogs/Create
+
+        // ENHANCEMENT : Include Guest Author functionality
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
@@ -174,44 +178,21 @@ namespace BlogProject.Controllers
                 .Include(b => b.BlogUser)
                 .Include(b => b.Posts)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (blog == null)
             {
                 return NotFound();
             }
 
-            // Prevent a blog containing posts from being deleted.
+            // Prevent a blog category containing one or more posts from being deleted.
             if (blog.Posts.Count is > 0)
             {
                 TempData["ErrorMessage"] = "This blog has one or more posts. Please reassign or delete posts before deleting the blog";
 
             }
 
-            return View(blog); //goes to deleteConfirmed action
+            return View(blog); // BLOG : For a better UX, this action redirects to deleteConfirmed action for the corresponding blog. However a SweetAlert2 message is triggered to asking user to reassign or delete posts before deleting the blog. On click of the ok button or by clicking out side of the modal, the user is redirected to the BlogPostIndex View
         }
-
-
-//        if (blog.Posts.Count is not 0)
-//            {
-//                TempData["ErrorMessage"] = "This blog has one or more posts. Please reassign or delete posts before deleting the blog";
-//            }
-            
-//            if (blog.Posts.Count is not 0)
-//            {
-//                return RedirectToAction("BlogPostIndex", "Posts", new { id = blog.Id
-//});
-//            }
-//            else
-//{
-//    return View(blog);
-//}
-//        }
-
-
-
-
-
-
-
 
 
         // POST: Blogs/Delete/5
@@ -223,7 +204,7 @@ namespace BlogProject.Controllers
                 .Include(b => b.Posts)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
-            // Prevent user from deleting a blog containing one or more posts
+            // Another safeguard to prevent user from deleting a blog containing one or more posts
             if (blog.Posts.Count is not 0)            
             {
                 _context.Blogs.Remove(blog);
