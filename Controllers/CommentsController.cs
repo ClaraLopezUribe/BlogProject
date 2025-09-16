@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
 using Microsoft.AspNetCore.Identity;
-using BlogProject.Services;
-using Microsoft.AspNetCore.Routing;
 
 namespace BlogProject.Controllers
 {
@@ -66,7 +64,7 @@ namespace BlogProject.Controllers
         public async Task<IActionResult> Create([Bind("PostId,Body")] Comment comment)
         {
             if (ModelState.IsValid)
-            {
+            {       
                     comment.BlogUserId = _userManager.GetUserId(User); // this is the author of the comment
                     comment.Created = DateTime.UtcNow;
                     _context.Add(comment);
