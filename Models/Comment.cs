@@ -12,7 +12,7 @@ namespace BlogProject.Models
 
         //FOREIGN KEYS (Primary keys of other classes/models):
         public int PostId { get; set; }
-        public required string BlogUserId { get; set; }
+        public string? BlogUserId { get; set; }
         public string? ModeratorId { get; set; }
 
 
