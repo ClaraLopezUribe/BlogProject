@@ -1,7 +1,4 @@
-﻿/* DELETE : Extraneous blog-posts */
-/* ENHANCEMENT : Handle search/tag term for AI; Return ONLY exact references */
-
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +8,6 @@ using BlogProject.View_Models;
 using BlogProject.Services;
 using X.PagedList.Extensions;
 using X.PagedList.EF;
-using Microsoft.AspNetCore.Routing;
 
 namespace BlogProject.Controllers
 {
@@ -51,6 +47,8 @@ namespace BlogProject.Controllers
 
 
         // GET : Posts/SearchIndex
+
+        /* ENHANCEMENT : Handle search/tag term for AI; Return ONLY exact references */
         public async Task<IActionResult> SearchIndex(int? page, string searchTerm)
         {
             ViewData["SearchTerm"] = searchTerm;
@@ -66,8 +64,8 @@ namespace BlogProject.Controllers
 
         // GET: Posts/Index
 
-        //// TODO : Restrict access to Admins only using [Authorize(Roles = "Admin")]. Uncomment this Task when related view is ready
-        //public async Task<IActionResult> Index() // Index of ALL Posts of all Blogs.  
+        /* ENHANCEMENT : Add Admin only list view of ALL Posts of all blogs to facilitate editing and reorganization. Uncomment when ready */
+        //public async Task<IActionResult> Index() // Index of ALL Posts of all Blogs
         //{
         //    var applicationDbContext = _context.Posts.Include(p => p.Blog).Include(p => p.BlogUser);
         //    return View(await applicationDbContext.ToListAsync());
@@ -139,7 +137,7 @@ namespace BlogProject.Controllers
             
             var dataVM = new PostDetailViewModel()
             {
-                Post = post,
+                Post = post,                
                 Tags = post.Tags
                     .Select(t => t.Text.ToLower())
                     .Distinct().ToList()
@@ -152,29 +150,6 @@ namespace BlogProject.Controllers
 
             return View(dataVM);
         }
-
-        //public async Task<IActionResult> Details(string slug)
-        //{
-        //    if (slug == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var post = await _context.Posts
-        //        .Include(p => p.Blog)
-        //        .Include(p => p.BlogUser) // This BlogUser is the Author of the Post
-        //        .Include(p => p.Tags)
-        //        .Include(p => p.Comments)
-        //        .ThenInclude(c => c.BlogUser) // This is the Author of the Comment
-        //        .FirstOrDefaultAsync(m => m.Slug == slug);
-
-        //    if (post == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(post);
-        //}
 
         // GET: Posts/Create
         public IActionResult Create(int? id)
@@ -222,7 +197,7 @@ namespace BlogProject.Controllers
                 }
 
 
-                //// Add custom model errors as needed
+                //// TODO : Add custom model errors as needed
                 //else if (slug.Contains("test"))
                 //{
                 //    validationErrorOccurred = true;
@@ -282,8 +257,6 @@ namespace BlogProject.Controllers
 
             return View(post);
         }
-
-
 
         // POST: Posts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -399,7 +372,7 @@ namespace BlogProject.Controllers
             return View(post);
         }
 
-        /* FEATURE : This is a Hard Delete. Refactor to create a Soft Delete using a bool check to remove it from the view but not from the database, if desired */
+        /* ENHANCEMENT : This is a Hard Delete. Refactor to create a Soft Delete using a bool check to remove it from the view but not from the database, if desired */
 
         // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
