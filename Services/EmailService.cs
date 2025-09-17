@@ -1,11 +1,5 @@
 ﻿using BlogProject.View_Models;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using MimeKit;
 using RestSharp;
 using RestSharp.Authenticators;
 
